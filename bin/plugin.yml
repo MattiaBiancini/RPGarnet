@@ -1,0 +1,6 @@
+name: RPGarnet
+author: Garnet14
+main: me.rpgarnet.RPGarnet
+description: RPG implementation for Minecraft
+api-version: 1.19
+version: 0.0.1
