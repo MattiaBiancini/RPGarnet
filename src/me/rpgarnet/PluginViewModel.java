@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import me.rpgarnet.data.PlayerData;
 import me.rpgarnet.data.attribute.Statistic;
 import me.rpgarnet.data.attribute.Stats;
+import me.rpgarnet.event.time.TimeScheduler;
 import me.rpgarnet.utils.StringUtils;
 
 public class PluginViewModel {
@@ -25,15 +26,18 @@ public class PluginViewModel {
 	private File playerF;
 	private FileConfiguration player;
 	
-	private List<PlayerData> data; 
+	private List<PlayerData> data;
+
+	private TimeScheduler timeSchedule; 
 
 	public PluginViewModel() {
 
 		instance = RPGarnet.instance;
 		data = new ArrayList<>();
 		loadFiles();
+		StringUtils.PREFIX = message.getString("prefix");
+		timeSchedule = new TimeScheduler(1);
 		
-		StringUtils.PREFIX = player.getString("prefix");
 
 	}
 
@@ -153,6 +157,10 @@ public class PluginViewModel {
 	}
 	public FileConfiguration getPlayer() {
 		return player;
+	}
+
+	public TimeScheduler getTimeSchedule() {
+		return timeSchedule;
 	}
 
 }

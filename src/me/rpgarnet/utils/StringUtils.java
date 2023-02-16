@@ -1,6 +1,7 @@
 package me.rpgarnet.utils;
 
 import me.rpgarnet.data.PlayerData;
+import me.rpgarnet.data.attribute.Stats;
 
 public class StringUtils {
 	
@@ -44,6 +45,10 @@ public class StringUtils {
 	
 	public static String voidMessage() {
 		return colorFixing("&7");
+	}
+
+	public static String yamlString(String string, PlayerData playerData, Stats stats) {
+		return yamlString(string.replaceAll("%SKILL%", stats.toString()), playerData);
 	}
 
 }

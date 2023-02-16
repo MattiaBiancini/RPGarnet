@@ -1,7 +1,12 @@
 package me.rpgarnet.data.attribute;
 
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+
+import me.rpgarnet.PluginViewModel;
+import me.rpgarnet.RPGarnet;
+import me.rpgarnet.utils.StringUtils;
 
 public abstract class Statistic {
 
@@ -19,6 +24,11 @@ public abstract class Statistic {
 	protected Player player;
 	protected Attribute attribute;
 	
+	/*
+	 * ADD EXPERIENCE METHOD
+	 * REMOVE EXPERIENCE METHOD
+	 * ON PLAYER LEVEL UP EVENT
+	 */
 	
 	public boolean levelUp() {
 		
@@ -62,6 +72,17 @@ public abstract class Statistic {
 		else
 			return (int) (expToLevel(level - 1) * rate);
 
+	}
+	
+	public void addExperience(int experience) {
+		if(levelUp()) {
+			PluginViewModel viewModel = RPGarnet.instance.getViewModel();
+			player.sendMessage(StringUtils.yamlString(
+					viewModel.getMessage().getString("levelup"), 
+					viewModel.getPlayerData(player), 
+					Stats.getStats(this.getClass().getName())));
+			player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, experience, experience);
+		}
 	}
 	
 	public static double calculateAttributeLevel(int level, double baseAttribute, double additivePerLevel) {

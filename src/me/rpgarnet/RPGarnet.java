@@ -4,6 +4,8 @@ import java.util.logging.Level;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.rpgarnet.commands.PlaySoundCMD;
+
 public class RPGarnet extends JavaPlugin {
 	
 	public static RPGarnet instance;
@@ -17,7 +19,7 @@ public class RPGarnet extends JavaPlugin {
 		
 		viewModel = new PluginViewModel();
 		
-		
+		this.getCommand("suono").setExecutor(new PlaySoundCMD());
 		
 		getLogger().log(Level.INFO, "RPGarnet has been loaded successfully!");
 	}
