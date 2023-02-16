@@ -1,0 +1,3 @@
+prefix: "&8[&4RPGarnet&8] &7"
+welcome: "Welcome back {PLAYER}"
+failed-registration: "Error trying to getting data!"
