@@ -19,16 +19,17 @@ public class MovementSpeed extends Statistic {
 		this.player = player;
 		this.attribute = attribute;
 		
-		this.experience = experience;
-		this.level = level;
-		this.expToLevel = expToLevel(level);
-		this.attributeValue = Statistic.calculateAttributeLevel(level, BASE, ADDITIVE);
-		
 		this.baseExpLevelUp = BASE_EXP_LEVEL_UP;
 		this.maxLevel = MAX_LEVEL;
 		this.rate = RATE;
 		this.additivePerLevel = ADDITIVE;
 		this.baseAttribute = BASE;
+		
+		this.experience = experience;
+		this.level = level;
+		this.attributeValue = Statistic.calculateAttributeLevel(level, BASE, ADDITIVE);
+		
+		this.expToLevel = expToLevel(level);
 	}
 
 	public MovementSpeed(Player player, Attribute attribute, int experience, int level, int expToLevel, double value) {

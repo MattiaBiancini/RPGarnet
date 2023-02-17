@@ -34,6 +34,8 @@ public class PlayerExperience implements Listener {
 		
 		Block block = e.getBlock();
 		Player player = e.getPlayer();
+		if(block == null)
+			return;
 		
 		if(!isValueableBlock(block))
 			return;
@@ -50,6 +52,8 @@ public class PlayerExperience implements Listener {
 		
 		Player player = e.getPlayer();
 		Block block = e.getClickedBlock();
+		if(block == null)
+			return;
 		
 		if(!isCrop(block.getType()))
 			return;
@@ -59,6 +63,7 @@ public class PlayerExperience implements Listener {
 			return;
 		
 		age.setAge(0);
+		block.setBlockData(age);
 		
 		Location loc = block.getLocation();
 		loc.setX(loc.getBlockX() + 0.5);
@@ -264,8 +269,6 @@ public class PlayerExperience implements Listener {
 			return 1;
 		if(mat == Material.MELON)
 			return 1;
-		if(mat == Material.ANCIENT_DEBRIS)
-			return 100;
 		if(mat == Material.PUFFERFISH)
 			return 5;
 		if(mat == Material.COD)

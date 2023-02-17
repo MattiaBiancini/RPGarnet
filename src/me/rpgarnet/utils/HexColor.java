@@ -61,12 +61,13 @@ public class HexColor {
                     int toCompensate = CENTER_PX - halvedMessageSize;
                     int spaceLength = DefaultFontInfo.SPACE.getLength() + 1;
                     int compensated = 0;
-                    StringBuilder sb = new StringBuilder();
+                    String sb = "";
                     while(compensated < toCompensate){
-                            sb.append(" ");
+                            sb = sb + " ";
                             compensated += spaceLength;
                     }
-                    return message;
+                    
+                    return sb.toString() + message;
             }
     
 }

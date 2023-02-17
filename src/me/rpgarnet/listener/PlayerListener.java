@@ -67,6 +67,8 @@ public class PlayerListener implements Listener {
 
 		if(data == null)
 			return;
+		
+		viewModel.savePlayerData(data);
 
 	}
 

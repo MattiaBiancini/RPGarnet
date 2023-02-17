@@ -31,6 +31,7 @@ public class StringUtils {
 	public static String placeholder(String message, PlayerData data) {
 		
 		message = message.replaceAll("%PLAYER%", data.getPlayer().getName());
+		message = message.replaceAll("%LEVEL%", data.getPlayer().getName());
 		
 		return message;
 	}
@@ -48,7 +49,7 @@ public class StringUtils {
 	}
 
 	public static String yamlString(String string, PlayerData playerData, Stats stats) {
-		return yamlString(string.replaceAll("%SKILL%", stats.toString()), playerData);
+		return yamlString(string.replaceAll("%SKILL%", capital(stats.toString())), playerData);
 	}
 
 	public static String yamlString(String string, int foodExperience) {

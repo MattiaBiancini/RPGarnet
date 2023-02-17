@@ -35,10 +35,12 @@ public class ScoreboardManager {
         		scoreboard.registerNewTeam("§" + Stats.getIntValue(s));
         	scoreboard.getTeam(s.getStatsName()).addEntry(s.getStatsName());
         	scoreboard.getTeam(s.getStatsName()).setPrefix("§6§l" + s.getIcon() + "§6 ");
-        	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§7" + data.getStats()[Stats.getIntValue(s)].getAttributeValue());
+        	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§6" + data.getStats()[Stats.getIntValue(s)].getAttributeValue());
         	objective.getScore(s.getStatsName()).setScore(14 - 2 * Stats.getIntValue(s));
         	scoreboard.getTeam("§" + Stats.getIntValue(s)).addEntry("§" + Stats.getIntValue(s));
         	scoreboard.getTeam("§" + Stats.getIntValue(s)).setSuffix(StringUtils.percentageExp(data, Stats.getIntValue(s)));
+        	//scoreboard.getTeam("§" + Stats.getIntValue(s)).setSuffix(StringUtils.colorFixing("&fExperience: &e" + 
+        	//data.getStats()[Stats.getIntValue(s)].getExperience() + "&f/&6" + data.getStats()[Stats.getIntValue(s)].getExpToLevel()));
         	objective.getScore("§" + Stats.getIntValue(s)).setScore(14 - 2 * Stats.getIntValue(s) - 1);
         }       
 
@@ -57,7 +59,8 @@ public class ScoreboardManager {
             	if(scoreboard.getTeam(s.getStatsName()) == null)
             		scoreboard.registerNewTeam(s.getStatsName());
             	scoreboard.getTeam(s.getStatsName()).setPrefix("§6§l" + s.getIcon() + "§6 ");
-            	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§7" + data.getStats()[Stats.getIntValue(s)].getAttributeValue());
+            	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§6" + data.getStats()[Stats.getIntValue(s)].getAttributeValue());
+            	scoreboard.getTeam("§" + Stats.getIntValue(s)).setSuffix(StringUtils.percentageExp(data, Stats.getIntValue(s)));
             }
         }
     }

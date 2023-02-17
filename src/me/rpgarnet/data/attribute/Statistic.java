@@ -81,7 +81,7 @@ public abstract class Statistic {
 			player.sendMessage(StringUtils.yamlString(
 					viewModel.getMessage().getString("levelup"), 
 					viewModel.getPlayerData(player), 
-					Stats.getStats(this.getClass().getName())));
+					getStatsFromClass(this)));
 			player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 5, 0);
 		}
 	}
@@ -96,7 +96,7 @@ public abstract class Statistic {
 			player.sendMessage(StringUtils.yamlString(
 					viewModel.getMessage().getString("leveldown"), 
 					viewModel.getPlayerData(player), 
-					Stats.getStats(this.getClass().getName())));
+					getStatsFromClass(this)));
 			player.playSound(player, Sound.ENTITY_GHAST_SHOOT, 5, 0);
 		}
 		
@@ -118,6 +118,24 @@ public abstract class Statistic {
 	
 	public double getPercentage() {
 		return (experience * 1.0)/expToLevel();
+	}
+	
+	private static Stats getStatsFromClass(Statistic statistic) {
+		if(statistic instanceof Armor)
+			return Stats.ARMOR;
+		if(statistic instanceof AttackSpeed)
+			return Stats.ATTACK_SPEED;
+		if(statistic instanceof Damage)
+			return Stats.DAMAGE;
+		if(statistic instanceof Health)
+			return Stats.HEALTH;
+		if(statistic instanceof KnockbackResistance)
+			return Stats.KNOCKBACK_RESISTANCE;
+		if(statistic instanceof Luck)
+			return Stats.LUCK;
+		if(statistic instanceof MovementSpeed)
+			return Stats.MOVEMENT_SPEED;
+		return null;
 	}
 
 	public int getBaseExpLevelUp() {

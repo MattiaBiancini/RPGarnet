@@ -1,6 +1,6 @@
 prefix: "&8[&4&lRPGarnet&8] &7"
 welcome: "&7Welcome back &e%PLAYER%"
-levelup: "&7Congratulation! You reached level &e%LEVEL% &7in &e%SKILL%!"
-leveldown: "&7You have been downgraded to level &e%LEVEL% &7in &e%SKILL%"
+levelup: "&7Congratulation! You reached level &e%LEVEL% &7in &e%SKILL%&7!"
+leveldown: "&7You have been downgraded to level &e%LEVEL% &7in &e%SKILL%&7!"
 death-message: "&7You died! Your experience has been set to 0!"
 failed-registration: "&cError trying to getting data!"
