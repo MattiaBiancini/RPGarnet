@@ -4,3 +4,7 @@ main: me.rpgarnet.RPGarnet
 description: RPG implementation for Minecraft
 api-version: 1.19
 version: 0.0.1
+commands:
+   suono:
+      description: Commands to play sound
+      usage: /suono

@@ -9,10 +9,15 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import me.rpgarnet.PluginViewModel;
 import me.rpgarnet.RPGarnet;
 import me.rpgarnet.data.PlayerData;
+import me.rpgarnet.scoreboard.ScoreboardHandler;
+import me.rpgarnet.scoreboard.ScoreboardManager;
 import me.rpgarnet.utils.HexColor;
 import me.rpgarnet.utils.StringUtils;
 
 public class PlayerListener implements Listener {
+	
+	private final ScoreboardManager sb = new ScoreboardManager();
+	private final ScoreboardHandler map = new ScoreboardHandler();
 	
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent e) {
@@ -41,6 +46,8 @@ public class PlayerListener implements Listener {
 		data.setPlayerAttributes();
 		HexColor stringUtils = new HexColor();
 		
+		sb.createScoreboard(data);
+		
 		player.sendMessage(stringUtils.centeredMessage("&6&l---=[&4&l" + StringUtils.PREFIX + "&6&l]=---"));
 		player.sendMessage(StringUtils.voidMessage());
 		player.sendMessage(stringUtils.centeredMessage(StringUtils.yamlString(viewModel.getMessage().getString("welocome"), data)));
@@ -56,6 +63,7 @@ public class PlayerListener implements Listener {
 		PluginViewModel viewModel = RPGarnet.instance.getViewModel();
 		PlayerData data = viewModel.removePlayer(player);
 		e.setQuitMessage(StringUtils.colorFixing("&8[&c-&8] &7" + player.getName()));
+		map.removePlayerScoreboard(player);
 		
 		if(data == null)
 			return;

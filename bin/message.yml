@@ -1,5 +1,5 @@
 prefix: "&8[&4RPGarnet&8] &7"
 welcome: "Welcome back {PLAYER}"
 levelup: "Congratulation! You reached level %LEVEL% in %SKILL%!"
-
+leveldown: "You have been downgraded to level %LEVEL% in %SKILL%"
 failed-registration: "Error trying to getting data!"

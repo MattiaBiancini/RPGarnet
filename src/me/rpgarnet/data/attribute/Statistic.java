@@ -24,12 +24,6 @@ public abstract class Statistic {
 	protected Player player;
 	protected Attribute attribute;
 	
-	/*
-	 * ADD EXPERIENCE METHOD
-	 * REMOVE EXPERIENCE METHOD
-	 * ON PLAYER LEVEL UP EVENT
-	 */
-	
 	public boolean levelUp() {
 		
 		if(!canLevelUp())
@@ -74,21 +68,38 @@ public abstract class Statistic {
 
 	}
 	
+	public static double calculateAttributeLevel(int level, double baseAttribute, double additivePerLevel) {
+		if(level == 0)
+			return baseAttribute;
+		return additivePerLevel + calculateAttributeLevel(level -1, baseAttribute, additivePerLevel);
+	}
+	
 	public void addExperience(int experience) {
+		this.experience = this.experience + experience;
 		if(levelUp()) {
 			PluginViewModel viewModel = RPGarnet.instance.getViewModel();
 			player.sendMessage(StringUtils.yamlString(
 					viewModel.getMessage().getString("levelup"), 
 					viewModel.getPlayerData(player), 
 					Stats.getStats(this.getClass().getName())));
-			player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, experience, experience);
+			player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 5, 0);
 		}
 	}
 	
-	public static double calculateAttributeLevel(int level, double baseAttribute, double additivePerLevel) {
-		if(level == 0)
-			return baseAttribute;
-		return additivePerLevel + calculateAttributeLevel(level -1, baseAttribute, additivePerLevel);
+	public void removeExperience(int experience) {
+		this.experience = this.experience - experience;
+		if(this.experience < 0) {
+			level--;
+			this.experience = expToLevel(level) + experience;
+			
+			PluginViewModel viewModel = RPGarnet.instance.getViewModel();
+			player.sendMessage(StringUtils.yamlString(
+					viewModel.getMessage().getString("leveldown"), 
+					viewModel.getPlayerData(player), 
+					Stats.getStats(this.getClass().getName())));
+			player.playSound(player, Sound.ENTITY_GHAST_SHOOT, 5, 0);
+		}
+		
 	}
 
 	public int getBaseExpLevelUp() {

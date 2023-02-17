@@ -31,7 +31,7 @@ public class PlaySoundCMD implements CommandExecutor {
 		player.playSound(player.getLocation(), Sound.valueOf(args[0]), Float.parseFloat(args[1]), Float.parseFloat(args[2]));
 		
 		return true;
-		
+
 	}
 
 }

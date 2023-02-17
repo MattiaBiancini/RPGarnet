@@ -3,6 +3,8 @@ package me.rpgarnet.data.attribute;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
+import me.rpgarnet.utils.StringUtils;
+
 public enum Stats {
 	ARMOR,
 	ATTACK_SPEED,
@@ -130,6 +132,32 @@ public enum Stats {
 	@Override
 	public String toString() {
 		return super.toString().replaceAll("_", "").toLowerCase();
+	}
+
+	public String getStatsName() {
+		return StringUtils.capital(super.toString().replaceAll("_", " "));
+	}
+
+	public String getIcon() {
+		switch(this) {
+			case ARMOR:
+				return "✚";
+			case ATTACK_SPEED:
+				return "✦";
+			case DAMAGE:
+				return "¤";
+			case HEALTH:
+				return "♡";
+			case KNOCKBACK:
+				return "☄";
+			case KNOCKBACK_RESISTANCE:
+				return "✖";
+			case LUCK:
+				return "★";
+			case MOVEMENT_SPEED:
+				return "✤";
+	}
+	return "";
 	}
 	
 }

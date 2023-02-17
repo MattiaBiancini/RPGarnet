@@ -1,6 +1,7 @@
 package me.rpgarnet;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import me.rpgarnet.data.PlayerData;
 import me.rpgarnet.data.attribute.Statistic;
 import me.rpgarnet.data.attribute.Stats;
 import me.rpgarnet.event.time.TimeScheduler;
+import me.rpgarnet.scoreboard.ScoreboardManager;
 import me.rpgarnet.utils.StringUtils;
 
 public class PluginViewModel {
@@ -28,7 +30,9 @@ public class PluginViewModel {
 	
 	private List<PlayerData> data;
 
-	private TimeScheduler timeSchedule; 
+	private TimeScheduler timeSchedule;
+	
+	private ScoreboardManager scoreboard;
 
 	public PluginViewModel() {
 
@@ -37,7 +41,6 @@ public class PluginViewModel {
 		loadFiles();
 		StringUtils.PREFIX = message.getString("prefix");
 		timeSchedule = new TimeScheduler(1);
-		
 
 	}
 
@@ -84,7 +87,12 @@ public class PluginViewModel {
 	public void registerNewPlayer(Player player) {
 
 		this.player.set(player.getName() + ".UUID", player.getUniqueId().toString());
-
+		try {
+			this.player.save(playerF);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		PlayerData playerData = new PlayerData(player);
 		savePlayerData(playerData);
 
@@ -99,6 +107,11 @@ public class PluginViewModel {
 		for(int i = 0; i < playerData.getStats().length; i++) {
 			player.set(player.getName() + ".stats." + Stats.getStats(i).toString() + ".level", playerData.getStats()[i].getLevel());
 			player.set(player.getName() + ".stats." + Stats.getStats(i).toString() + ".experience", playerData.getStats()[i].getExperience());
+		}
+		try {
+			this.player.save(playerF);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 	}
@@ -161,6 +174,10 @@ public class PluginViewModel {
 
 	public TimeScheduler getTimeSchedule() {
 		return timeSchedule;
+	}
+
+	public ScoreboardManager getScoreboard() {
+		return scoreboard;
 	}
 
 }
