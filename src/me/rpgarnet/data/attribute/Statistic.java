@@ -101,6 +101,24 @@ public abstract class Statistic {
 		}
 		
 	}
+	
+	public void deathReset() {
+		
+		if(experience > 0) {
+			experience = 0;
+			return;
+		}
+		
+		if(level == 0)
+			return;
+		
+		level--;
+		
+	}
+	
+	public double getPercentage() {
+		return (experience * 1.0)/expToLevel();
+	}
 
 	public int getBaseExpLevelUp() {
 		return baseExpLevelUp;
@@ -161,5 +179,5 @@ public abstract class Statistic {
 	public double getAttributeValue() {
 		return attributeValue;
 	}
-	
+
 }

@@ -13,14 +13,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
+import me.rpgarnet.PluginViewModel;
 import me.rpgarnet.RPGarnet;
 import me.rpgarnet.data.PlayerData;
+import me.rpgarnet.data.attribute.Statistic;
 import me.rpgarnet.data.attribute.Stats;
+import me.rpgarnet.utils.StringUtils;
 
 public class PlayerExperience implements Listener {
 	
@@ -100,7 +105,6 @@ public class PlayerExperience implements Listener {
 				PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
 				data.getStats()[Stats.getIntValue(Stats.DAMAGE)].addExperience(getHostileValue(entity));
 				data.getStats()[Stats.getIntValue(Stats.ATTACK_SPEED)].addExperience(getHostileValue(entity));
-				data.getStats()[Stats.getIntValue(Stats.KNOCKBACK)].addExperience(getHostileValue(entity));
 			}
 			
 		}
@@ -120,6 +124,29 @@ public class PlayerExperience implements Listener {
 			
 		}
 		
+	}
+	
+	@EventHandler
+	public void onPlayerDie(PlayerDeathEvent e) {
+		Player player = e.getEntity();
+		PluginViewModel viewModel = RPGarnet.instance.getViewModel();
+		PlayerData data = viewModel.getPlayerData(player);
+		for(Statistic stat : data.getStats()) {
+			stat.deathReset();
+		}
+		player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("death-message"), data));
+	}
+	
+	@EventHandler
+	public void onPlayerEat(PlayerItemConsumeEvent e) {
+		Player player = e.getPlayer();
+		ItemStack item = e.getItem();
+		if(isFood(item.getType())) {
+			PluginViewModel viewModel = RPGarnet.instance.getViewModel();
+			PlayerData data = viewModel.getPlayerData(player);
+			data.getStats()[Stats.getIntValue(Stats.MOVEMENT_SPEED)].addExperience(getFoodExperience(item.getType()));
+			player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("feed-information"), getFoodExperience(item.getType())));
+		}
 	}
 	
 	private static boolean isValueableBlock(Block block) {
@@ -390,6 +417,160 @@ public class PlayerExperience implements Listener {
 			return 50;
 		
 		return 0;
+	}
+	
+	public boolean isFood(Material mat) {
+		
+		if(mat == Material.ROTTEN_FLESH)
+			return true;
+		if(mat == Material.SPIDER_EYE)
+			return true;
+		if(mat == Material.APPLE)
+			return true;
+		if(mat == Material.COOKED_BEEF)
+			return true;
+		if(mat == Material.COOKED_CHICKEN)
+			return true;
+		if(mat == Material.COOKED_COD)
+			return true;
+		if(mat == Material.COOKED_MUTTON)
+			return true;
+		if(mat == Material.COOKED_PORKCHOP)
+			return true;
+		if(mat == Material.COOKED_RABBIT)
+			return true;
+		if(mat == Material.COOKED_SALMON)
+			return true;
+		if(mat == Material.BEEF)
+			return true;
+		if(mat == Material.CHICKEN)
+			return true;
+		if(mat == Material.COD)
+			return true;
+		if(mat == Material.MUTTON)
+			return true;
+		if(mat == Material.PORKCHOP)
+			return true;
+		if(mat == Material.RABBIT)
+			return true;
+		if(mat == Material.SALMON)
+			return true;
+		if(mat == Material.COOKIE)
+			return true;
+		if(mat == Material.BREAD)
+			return true;
+		if(mat == Material.POTATO)
+			return true;
+		if(mat == Material.BAKED_POTATO)
+			return true;
+		if(mat == Material.CARROT)
+			return true;
+		if(mat == Material.GOLDEN_APPLE)
+			return true;
+		if(mat == Material.GOLDEN_CARROT)
+			return true;
+		if(mat == Material.MUSHROOM_STEW)
+			return true;
+		if(mat == Material.PUFFERFISH)
+			return true;
+		if(mat == Material.MELON_SLICE)
+			return true;
+		if(mat == Material.BEETROOT)
+			return true;
+		if(mat == Material.BEETROOT_SOUP)
+			return true;
+		if(mat == Material.CAKE)
+			return true;
+		if(mat == Material.CHORUS_FRUIT)
+			return true;
+		if(mat == Material.DRIED_KELP)
+			return true;
+		if(mat == Material.GLOW_BERRIES)
+			return true;
+		if(mat == Material.SWEET_BERRIES)
+			return true;
+		if(mat == Material.TROPICAL_FISH)
+			return true;
+		
+		return false;
+		
+	}
+	
+	public int getFoodExperience(Material mat) {
+		
+		if(mat == Material.ROTTEN_FLESH)
+			return -10;
+		if(mat == Material.SPIDER_EYE)
+			return -20;
+		if(mat == Material.APPLE)
+			return 5;
+		if(mat == Material.COOKED_BEEF)
+			return 30;
+		if(mat == Material.COOKED_CHICKEN)
+			return 25;
+		if(mat == Material.COOKED_COD)
+			return 25;
+		if(mat == Material.COOKED_MUTTON)
+			return 25;
+		if(mat == Material.COOKED_PORKCHOP)
+			return 35;
+		if(mat == Material.COOKED_RABBIT)
+			return 40;
+		if(mat == Material.COOKED_SALMON)
+			return 25;
+		if(mat == Material.BEEF)
+			return -5;
+		if(mat == Material.CHICKEN)
+			return -5;
+		if(mat == Material.COD)
+			return -5;
+		if(mat == Material.MUTTON)
+			return -5;
+		if(mat == Material.PORKCHOP)
+			return -5;
+		if(mat == Material.RABBIT)
+			return -5;
+		if(mat == Material.SALMON)
+			return -5;
+		if(mat == Material.COOKIE)
+			return 5;
+		if(mat == Material.BREAD)
+			return 10;
+		if(mat == Material.POTATO)
+			return -5;
+		if(mat == Material.BAKED_POTATO)
+			return 15;
+		if(mat == Material.CARROT)
+			return 10;
+		if(mat == Material.GOLDEN_APPLE)
+			return 2;
+		if(mat == Material.GOLDEN_CARROT)
+			return 80;
+		if(mat == Material.MUSHROOM_STEW)
+			return 50;
+		if(mat == Material.PUFFERFISH)
+			return -15;
+		if(mat == Material.MELON_SLICE)
+			return 1;
+		if(mat == Material.BEETROOT)
+			return 1;
+		if(mat == Material.BEETROOT_SOUP)
+			return 10;
+		if(mat == Material.CAKE)
+			return 2;
+		if(mat == Material.CHORUS_FRUIT)
+			return (int) ((Math.random() + 1) * 10);
+		if(mat == Material.DRIED_KELP)
+			return -5;
+		if(mat == Material.GLOW_BERRIES)
+			return 20;
+		if(mat == Material.SWEET_BERRIES)
+			return 4;
+		if(mat == Material.TROPICAL_FISH)
+			return 5;
+		
+		return 0;
+		
 	}
 
 }

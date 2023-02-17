@@ -10,7 +10,6 @@ public enum Stats {
 	ATTACK_SPEED,
 	DAMAGE,
 	HEALTH,
-	KNOCKBACK,
 	KNOCKBACK_RESISTANCE,
 	LUCK,
 	MOVEMENT_SPEED;
@@ -25,14 +24,12 @@ public enum Stats {
 				return 2;
 			case HEALTH:
 				return 3;
-			case KNOCKBACK:
-				return 4;
 			case KNOCKBACK_RESISTANCE:
-				return 5;
+				return 4;
 			case LUCK:
-				return 6;
+				return 5;
 			case MOVEMENT_SPEED:
-				return 7;
+				return 6;
 		}
 		return -1;
 	}
@@ -48,12 +45,10 @@ public enum Stats {
 	        case 3:
 	            return Stats.HEALTH;
 	        case 4:
-	            return Stats.KNOCKBACK;
-	        case 5:
 	            return Stats.KNOCKBACK_RESISTANCE;
-	        case 6:
+	        case 5:
 	            return Stats.LUCK;
-	        case 7:
+	        case 6:
 	            return Stats.MOVEMENT_SPEED;
 	        default:
 	            return null;
@@ -71,8 +66,6 @@ public enum Stats {
 	            return Stats.DAMAGE;
 	        case "HEALTH":
 	            return Stats.HEALTH;
-	        case "KNOCKBACK":
-	            return Stats.KNOCKBACK;
 	        case "KNOCKBACKRESISTANCE":
 	            return Stats.KNOCKBACK_RESISTANCE;
 	        case "LUCK":
@@ -95,8 +88,6 @@ public enum Stats {
 				return new Damage(player, Attribute.GENERIC_ATTACK_DAMAGE);
 			case HEALTH:
 				return new Health(player, Attribute.GENERIC_MAX_HEALTH);
-			case KNOCKBACK:
-				return new Knockback(player, Attribute.GENERIC_ATTACK_KNOCKBACK);
 			case KNOCKBACK_RESISTANCE:
 				return new KnockbackResistance(player, Attribute.GENERIC_KNOCKBACK_RESISTANCE);
 			case LUCK:
@@ -117,8 +108,6 @@ public enum Stats {
 				return new Damage(player, Attribute.GENERIC_ATTACK_DAMAGE, experience, level);
 			case HEALTH:
 				return new Health(player, Attribute.GENERIC_MAX_HEALTH, experience, level);
-			case KNOCKBACK:
-				return new Knockback(player, Attribute.GENERIC_ATTACK_KNOCKBACK, experience, level);
 			case KNOCKBACK_RESISTANCE:
 				return new KnockbackResistance(player, Attribute.GENERIC_KNOCKBACK_RESISTANCE, experience, level);
 			case LUCK:
@@ -135,7 +124,13 @@ public enum Stats {
 	}
 
 	public String getStatsName() {
-		return StringUtils.capital(super.toString().replaceAll("_", " "));
+		if(this == ATTACK_SPEED)
+			return "AtkSpeed";
+		if(this == KNOCKBACK_RESISTANCE)
+			return "Resistance";
+		if(this == MOVEMENT_SPEED)
+			return "Speed";
+		return StringUtils.capital(super.toString());
 	}
 
 	public String getIcon() {
@@ -145,19 +140,17 @@ public enum Stats {
 			case ATTACK_SPEED:
 				return "✦";
 			case DAMAGE:
-				return "¤";
-			case HEALTH:
-				return "♡";
-			case KNOCKBACK:
 				return "☄";
+			case HEALTH:
+				return "❤";
 			case KNOCKBACK_RESISTANCE:
 				return "✖";
 			case LUCK:
-				return "★";
-			case MOVEMENT_SPEED:
 				return "✤";
-	}
-	return "";
+			case MOVEMENT_SPEED:
+				return "⌛";
+		}
+		return "";
 	}
 	
 }

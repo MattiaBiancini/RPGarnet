@@ -4,6 +4,7 @@ import java.util.logging.Level;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.rpgarnet.commands.AttributeCMD;
 import me.rpgarnet.commands.PlaySoundCMD;
 import me.rpgarnet.listener.PlayerExperience;
 import me.rpgarnet.listener.PlayerListener;
@@ -12,6 +13,9 @@ public class RPGarnet extends JavaPlugin {
 	
 	public static RPGarnet instance;
 	private PluginViewModel viewModel;
+	//plugman unload RPGarnet
+	//plugman load RPGarnet
+	//plugman restart RPGarnet
 	
 	@Override
 	public void onEnable() {
@@ -22,6 +26,8 @@ public class RPGarnet extends JavaPlugin {
 		viewModel = new PluginViewModel();
 		
 		this.getCommand("suono").setExecutor(new PlaySoundCMD());
+		this.getCommand("attribute").setExecutor(new AttributeCMD());
+		
 		loadListeners();
 		
 		viewModel.getScoreboard().start();

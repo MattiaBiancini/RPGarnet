@@ -6,7 +6,7 @@ import me.rpgarnet.data.attribute.*;
 
 public class PlayerData {
 
-	public static final int STATS_NUMBER = 8;
+	public static final int STATS_NUMBER = 7;
 	
 	private Statistic[] stats;	
 	private Player player;
@@ -18,7 +18,7 @@ public class PlayerData {
 	}
 
 	public PlayerData(Player player, Armor armor, AttackSpeed attackSpeed, Damage damage, Health health, 
-			Knockback knockback, KnockbackResistance knockbackResistence, Luck luck, MovementSpeed movementSpeed) {
+			KnockbackResistance knockbackResistence, Luck luck, MovementSpeed movementSpeed) {
 		
 		this.player = player;
 		
@@ -27,10 +27,9 @@ public class PlayerData {
 		stats[1] = attackSpeed;
 		stats[2] = damage;
 		stats[3] = health;
-		stats[4] = knockback;
-		stats[5] = knockbackResistence;
-		stats[6] = luck;
-		stats[7] = movementSpeed;
+		stats[4] = knockbackResistence;
+		stats[5] = luck;
+		stats[6] = movementSpeed;
 		
 		setPlayerAttributes();
 	}

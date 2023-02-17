@@ -8,3 +8,6 @@ commands:
    suono:
       description: Commands to play sound
       usage: /suono
+   attribute:
+      description: Commands to test attributes
+      usage: /attribute

@@ -30,7 +30,7 @@ public class StringUtils {
 	
 	public static String placeholder(String message, PlayerData data) {
 		
-		message = message.replaceAll("{PLAYER}", data.getPlayer().getName());
+		message = message.replaceAll("%PLAYER%", data.getPlayer().getName());
 		
 		return message;
 	}
@@ -49,6 +49,46 @@ public class StringUtils {
 
 	public static String yamlString(String string, PlayerData playerData, Stats stats) {
 		return yamlString(string.replaceAll("%SKILL%", stats.toString()), playerData);
+	}
+
+	public static String yamlString(String string, int foodExperience) {
+		if(foodExperience > 0)
+			string.replaceAll("%FOOD_POWER%", colorFixing("&a") + foodExperience);
+		else if(foodExperience < 0)
+			string.replaceAll("%FOOD_POWER%", colorFixing("&c") + foodExperience);
+		else
+			string.replaceAll("%FOOD_POWER%", colorFixing("&e") + foodExperience);
+		return yamlString(string);
+	}
+
+	public static String percentageExp(PlayerData data, int intValue) {
+		
+		String identifier = "";
+		double percentage = data.getStats()[intValue].getPercentage();
+		if(percentage == 0.0)
+			identifier =  StringUtils.colorFixing("&c███████████");
+		else if(percentage <= 0.1)
+			identifier =  StringUtils.colorFixing("&a█&c██████████");
+		else if(percentage <= 0.2)
+			identifier =  StringUtils.colorFixing("&a██&c█████████");
+		else if(percentage <= 0.3)
+			identifier =  StringUtils.colorFixing("&a███&c████████");
+		else if(percentage <= 0.4)
+			identifier =  StringUtils.colorFixing("&a████&c███████");
+		else if(percentage <= 0.5)
+			identifier =  StringUtils.colorFixing("&a█████&c██████");
+		else if(percentage <= 0.6)
+			identifier =  StringUtils.colorFixing("&a██████&c█████");
+		else if(percentage <= 0.7)
+			identifier =  StringUtils.colorFixing("&a███████&c████");
+		else if(percentage <= 0.8)
+			identifier =  StringUtils.colorFixing("&a█████████&c██");
+		else if(percentage <= 0.9)
+			identifier =  StringUtils.colorFixing("&a██████████&c█");
+		else 
+			identifier =  StringUtils.colorFixing("&a███████████");
+		
+		return identifier;
 	}
 
 }

@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rpgarnet.data.PlayerData;
 import me.rpgarnet.data.attribute.Statistic;
@@ -41,6 +41,7 @@ public class PluginViewModel {
 		loadFiles();
 		StringUtils.PREFIX = message.getString("prefix");
 		timeSchedule = new TimeScheduler(1);
+		scoreboard = new ScoreboardManager();
 
 	}
 
@@ -84,7 +85,7 @@ public class PluginViewModel {
 	 * Create new player in player.yml, saves his name, UUID and the base stats
 	 * @param player
 	 */
-	public void registerNewPlayer(Player player) {
+	public PlayerData registerNewPlayer(Player player) {
 
 		this.player.set(player.getName() + ".UUID", player.getUniqueId().toString());
 		try {
@@ -96,6 +97,7 @@ public class PluginViewModel {
 		PlayerData playerData = new PlayerData(player);
 		savePlayerData(playerData);
 
+		return playerData;
 	}
 
 	/**
@@ -104,15 +106,24 @@ public class PluginViewModel {
 	 */
 	public void savePlayerData(PlayerData playerData) {
 
-		for(int i = 0; i < playerData.getStats().length; i++) {
-			player.set(player.getName() + ".stats." + Stats.getStats(i).toString() + ".level", playerData.getStats()[i].getLevel());
-			player.set(player.getName() + ".stats." + Stats.getStats(i).toString() + ".experience", playerData.getStats()[i].getExperience());
-		}
-		try {
-			this.player.save(playerF);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		 new BukkitRunnable() {
+
+	            @Override
+	            public void run() {
+	                
+	            	for(int i = 0; i < playerData.getStats().length; i++) {
+	        			player.set(playerData.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".level", playerData.getStats()[i].getLevel());
+	        			player.set(playerData.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".experience", playerData.getStats()[i].getExperience());
+	        		}
+	        		try {
+	        			player.save(playerF);
+	        		} catch (IOException e) {
+	        			e.printStackTrace();
+	        		}
+	            	
+	            }
+
+	        }.runTaskAsynchronously(RPGarnet.instance);
 
 	}
 
@@ -123,18 +134,35 @@ public class PluginViewModel {
 	 */
 	public PlayerData getPlayerData(Player player) {
 
+		if(player.isOnline())
+			return searchPlayerData(player);
+		
 		PlayerData data;
 		Statistic[] stats = new Statistic[PlayerData.STATS_NUMBER];
-		ConfigurationSection configuration = this.player.getConfigurationSection(player.getName() + ".stats");
 		for(int i = 0; i < PlayerData.STATS_NUMBER; i++) {
 			stats[i] = Stats.getStatistic(Stats.getStats(i), player, 
-					configuration.getInt(Stats.getStats(i).toString() + ".experience"), 
-					configuration.getInt(Stats.getStats(i).toString() + ".level"));
+					this.player.getInt(player.getName() + ".stats." + Stats.getStats(i).toString().toLowerCase() + ".experience"), 
+					this.player.getInt(player.getName() + ".stats." + Stats.getStats(i).toString().toLowerCase() + ".level"));
 		}
 		data = new PlayerData(player, stats);
 		
 		return data;
 
+	}
+	
+	public PlayerData loadPlayerData(Player player) {
+		
+		PlayerData data;
+		Statistic[] stats = new Statistic[PlayerData.STATS_NUMBER];
+		for(int i = 0; i < PlayerData.STATS_NUMBER; i++) {
+			stats[i] = Stats.getStatistic(Stats.getStats(i), player, 
+					this.player.getInt(player.getName() + ".stats." + Stats.getStats(i).toString().toLowerCase() + ".experience"), 
+					this.player.getInt(player.getName() + ".stats." + Stats.getStats(i).toString().toLowerCase() + ".level"));
+		}
+		data = new PlayerData(player, stats);
+		
+		return data;
+		
 	}
 	
 	/**
@@ -159,6 +187,13 @@ public class PluginViewModel {
 				data.remove(d);
 				return d;
 		}
+		return null;
+	}
+	
+	public PlayerData searchPlayerData(Player player) {
+		for(PlayerData d : data)
+			if(d.getPlayer().equals(player))
+				return d;
 		return null;
 	}
 
