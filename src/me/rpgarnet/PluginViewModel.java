@@ -116,12 +116,12 @@ public class PluginViewModel {
 				for(int i = 0; i < playerData.getStats().length; i++) {
 					player.set(playerData.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".level", playerData.getStats()[i].getLevel());
 					player.set(playerData.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".experience", playerData.getStats()[i].getExperience());
-				}
-				try {
-					player.save(playerF);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+					try {
+						player.save(playerF);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}				
 
 			}
 
@@ -186,12 +186,13 @@ public class PluginViewModel {
 			for(int i = 0; i < d.getStats().length; i++) {
 				player.set(d.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".level", d.getStats()[i].getLevel());
 				player.set(d.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".experience", d.getStats()[i].getExperience());
+				try {
+					player.save(playerF);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
-			try {
-				player.save(playerF);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			
 		}
 
 	}

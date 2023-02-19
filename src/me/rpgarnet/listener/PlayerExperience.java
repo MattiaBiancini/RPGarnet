@@ -1,8 +1,11 @@
 package me.rpgarnet.listener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,6 +22,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent.BedEnterResult;
+import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -37,6 +43,7 @@ public class PlayerExperience implements Listener {
 	
 	public static Map<Player, Long> warning = new HashMap<>();
 	private static final int COOLDOWN = 60;
+	public static List<Player> sleeping = new ArrayList<>();
 	
 	@EventHandler
 	public void onOreBlockBreak(BlockBreakEvent e) {
@@ -197,6 +204,25 @@ public class PlayerExperience implements Listener {
 			e.setCancelled(true);
 			warningPlayer(player, viewModel);			
 		}
+		
+	}
+	
+	@EventHandler
+	public void onPlayerSleep(PlayerBedEnterEvent e) {
+		if(!(e.getBedEnterResult() == BedEnterResult.OK))
+			return;
+		if(sleeping.contains(e.getPlayer()))
+			return;
+		sleeping.add(e.getPlayer());
+		if(sleeping.size() / (Bukkit.getOnlinePlayers().size() * 1.0) >= 0.5)
+			Bukkit.getWorld("world").setTime(0);
+		Bukkit.getServer().broadcastMessage(StringUtils.yamlString(RPGarnet.instance.getViewModel().getMessage().getString("sleeping-50")));
+	}
+	
+	@EventHandler
+	public void onPlayerSleep(PlayerBedLeaveEvent e) {
+		if(sleeping.contains(e.getPlayer()))
+			sleeping.remove(e.getPlayer());
 		
 	}
 	
@@ -407,6 +433,8 @@ public class PlayerExperience implements Listener {
 			return true;
 		if(type == EntityType.PHANTOM)
 			return true;
+		if(type == EntityType.PILLAGER)
+			return true;
 		if(type == EntityType.SHULKER)
 			return true;
 		if(type == EntityType.SILVERFISH)
@@ -481,6 +509,8 @@ public class PlayerExperience implements Listener {
 			return 1;
 		if(type == EntityType.PHANTOM)
 			return 1;
+		if(type == EntityType.PILLAGER)
+			return 5;
 		if(type == EntityType.SHULKER)
 			return 2;
 		if(type == EntityType.SILVERFISH)

@@ -12,6 +12,7 @@ afk-cancel: "&7You are &eAFK &7right now! Use command &e/afk &7to keep playing!"
 afk-info: "&6AFK Condition"
 afk-info-sub: "&7You will be invulnerable until you leave &eafk"
 feed-information: "&7You got %FOODPOWER% &7exp in &eMovement Speed&7!"
+sleeping-50: "&7At least &e50% &7of players are sleeping, night skip!"
 command:
    ignore-all: "&7 Non riceverai ping da tutti i player!"
    ignore-nobody: "&7 Riceverai i ping da tutti i player!"

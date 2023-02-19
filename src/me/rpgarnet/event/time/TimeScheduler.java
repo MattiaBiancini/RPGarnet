@@ -1,5 +1,7 @@
 package me.rpgarnet.event.time;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
@@ -9,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import me.rpgarnet.RPGarnet;
+import me.rpgarnet.listener.PlayerExperience;
 import me.rpgarnet.utils.StringUtils;
 
 public class TimeScheduler {
@@ -42,6 +45,7 @@ public class TimeScheduler {
 				else if(world.getTime()>= 0 && world.getTime() < 12000 && world.getDifficulty() != Difficulty.NORMAL) {
 					Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', StringUtils.PREFIX + " &7Il sole illumina il tuo viso... Difficoltá impostata a &aNormale"));
 					world.setDifficulty(Difficulty.NORMAL);
+					PlayerExperience.sleeping = new ArrayList<>();
 					bloodMoon = false;
 				}
 

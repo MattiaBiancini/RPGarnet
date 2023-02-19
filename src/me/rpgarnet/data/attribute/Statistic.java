@@ -46,7 +46,7 @@ public abstract class Statistic {
 		if(level == maxLevel)
 			return false;
 
-		if(experience >= expToLevel())
+		if(experience >= expToLevel)
 			return true;
 
 		return false;

@@ -59,6 +59,9 @@ public class ScoreboardManager {
         for (PlayerData data : viewModel.getData()) {
 
             Scoreboard scoreboard = ScoreboardHandler.getPlayerScoreboard(data.getPlayer());
+            if(scoreboard == null) {
+            	createScoreboard(data);
+            }
             boolean choice = (Math.random() > 0.5);
 
             for(Stats s : Stats.values()) {

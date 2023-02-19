@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 public class MovementSpeed extends Statistic {
 	
 	private static final int BASE_EXP_LEVEL_UP = 500;
-	private static final int MAX_LEVEL = 18;
+	private static final int MAX_LEVEL = 32;
 	private static final double RATE = 1.5;
 	private static final double ADDITIVE = 0.005;
 	private static final double BASE = 0.075;
