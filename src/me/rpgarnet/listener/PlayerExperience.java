@@ -1,14 +1,19 @@
 package me.rpgarnet.listener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -17,6 +22,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,6 +34,9 @@ import me.rpgarnet.data.attribute.Stats;
 import me.rpgarnet.utils.StringUtils;
 
 public class PlayerExperience implements Listener {
+	
+	public static Map<Player, Long> warning = new HashMap<>();
+	private static final int COOLDOWN = 60;
 	
 	@EventHandler
 	public void onOreBlockBreak(BlockBreakEvent e) {
@@ -51,6 +60,13 @@ public class PlayerExperience implements Listener {
 	public void onCropHarvestEvent(PlayerInteractEvent e) {
 		
 		Player player = e.getPlayer();
+		
+		PluginViewModel viewModel = RPGarnet.instance.getViewModel();
+		if(viewModel.isAfk(player)) {
+			e.setCancelled(true);
+			warningPlayer(player, viewModel);			
+		}
+		
 		Block block = e.getClickedBlock();
 		if(block == null)
 			return;
@@ -102,6 +118,24 @@ public class PlayerExperience implements Listener {
 	@EventHandler
 	public void onDealDamage(EntityDamageByEntityEvent e) {
 		
+		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player)
+			return;
+		
+		if(e.getDamager() instanceof AbstractArrow) {
+			
+			AbstractArrow arrow = (AbstractArrow) e.getDamager();
+			if(!(arrow.getShooter() instanceof Player))
+				return;
+			
+			Player player = (Player) arrow.getShooter();
+			Entity entity = e.getEntity();
+			if(isHostile(entity)) {
+				PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
+				data.getStats()[Stats.getIntValue(Stats.DAMAGE)].addExperience(getHostileValue(entity));
+				data.getStats()[Stats.getIntValue(Stats.ATTACK_SPEED)].addExperience(getHostileValue(entity));
+			}
+		}
+		
 		if(e.getDamager() instanceof Player) {
 			
 			Player player = (Player) e.getDamager();
@@ -152,6 +186,40 @@ public class PlayerExperience implements Listener {
 			data.getStats()[Stats.getIntValue(Stats.MOVEMENT_SPEED)].addExperience(getFoodExperience(item.getType()));
 			player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("feed-information"), getFoodExperience(item.getType())));
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerAfkMove(PlayerMoveEvent e) {
+		
+		Player player = e.getPlayer();
+		PluginViewModel viewModel = RPGarnet.instance.getViewModel();
+		if(viewModel.isAfk(player)) {
+			e.setCancelled(true);
+			warningPlayer(player, viewModel);			
+		}
+		
+	}
+	
+	private void warningPlayer(Player player, PluginViewModel viewModel) {
+		
+		if(!warning.containsKey(player)) {
+			player.sendTitle(StringUtils.colorFixing(viewModel.getMessage().getString("afk-info")), 
+					StringUtils.colorFixing(viewModel.getMessage().getString("afk-info-sub")), 20, 100, 40);
+			player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk-cancel")));
+			warning.put(player, System.currentTimeMillis() - 2*COOLDOWN);
+		}
+		
+		long secondsLeft = ((warning.get(player) / 1000) + COOLDOWN) - (System.currentTimeMillis()/1000);
+		
+		if(secondsLeft < 0) {
+			
+			player.sendTitle(StringUtils.colorFixing(viewModel.getMessage().getString("afk-info")), 
+					StringUtils.colorFixing(viewModel.getMessage().getString("afk-info-sub")), 20, 100, 40);
+			player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk-cancel")));
+			warning.put(player, System.currentTimeMillis());
+			
+		}
+		
 	}
 	
 	private static boolean isValueableBlock(Block block) {
@@ -351,6 +419,13 @@ public class PlayerExperience implements Listener {
 			return true;
 		if(type == EntityType.WITHER)
 			return true;
+		if(e instanceof Projectile) {
+			Projectile proj = (Projectile) e;
+			Entity entity = (Entity) proj.getShooter();
+			if(entity instanceof Player)
+				return false;
+			return true;
+		}
 		
 		return false;
 	}

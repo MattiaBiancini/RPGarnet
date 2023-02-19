@@ -33,7 +33,7 @@ public class StringUtils {
 		message = message.replaceAll("%PLAYER%", data.getPlayer().getName());
 		message = message.replaceAll("%LEVEL%", data.getPlayer().getName());
 		
-		return message;
+		return colorFixing(message);
 	}
 	
 	public static String yamlString(String message) {
@@ -53,12 +53,14 @@ public class StringUtils {
 	}
 
 	public static String yamlString(String string, int foodExperience) {
+		String food = foodExperience + "";
+		
 		if(foodExperience > 0)
-			string.replaceAll("%FOOD_POWER%", colorFixing("&a") + foodExperience);
+			string = string.replaceAll("%FOODPOWER%", "§a" + food);
 		else if(foodExperience < 0)
-			string.replaceAll("%FOOD_POWER%", colorFixing("&c") + foodExperience);
+			string = string.replaceAll("%FOODPOWER%", "§c" + food);
 		else
-			string.replaceAll("%FOOD_POWER%", colorFixing("&e") + foodExperience);
+			string = string.replaceAll("%FOODPOWER%", "§e" + food);
 		return yamlString(string);
 	}
 

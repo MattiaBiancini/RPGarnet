@@ -2,12 +2,13 @@ package me.rpgarnet;
 
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.rpgarnet.commands.AttributeCMD;
-import me.rpgarnet.commands.PlaySoundCMD;
-import me.rpgarnet.listener.PlayerExperience;
-import me.rpgarnet.listener.PlayerListener;
+import me.rpgarnet.commands.*;
+import me.rpgarnet.listener.*;
+import me.rpgarnet.data.PlayerData;
 
 public class RPGarnet extends JavaPlugin {
 	
@@ -21,16 +22,9 @@ public class RPGarnet extends JavaPlugin {
 	public void onEnable() {
 		
 		instance = this;
-		getLogger().log(Level.INFO, "Loading plugin!");
+		getLogger().log(Level.INFO, "Loading RPGarnet plugin!");
 		
-		viewModel = new PluginViewModel();
-		
-		this.getCommand("suono").setExecutor(new PlaySoundCMD());
-		this.getCommand("attribute").setExecutor(new AttributeCMD());
-		
-		loadListeners();
-		
-		viewModel.getScoreboard().start();
+		inizialise();
 		
 		getLogger().log(Level.INFO, "RPGarnet has been loaded successfully!");
 	}
@@ -38,18 +32,48 @@ public class RPGarnet extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		
+		viewModel.saveAllData();
 		getLogger().log(Level.INFO, "RPGarnet has been unloaded successfully!");
 		
 	}
 	
 	public void onReload() {
 		onDisable();
-		onEnable();
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+		}
+		inizialise();
+	}
+	
+	public void inizialise() {
+		
+		loadCommands();
+		loadListeners();
+		viewModel = new PluginViewModel();
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			PlayerData data = viewModel.loadPlayerData(player);
+			if(data == null) {
+				data = viewModel.registerNewPlayer(player);
+			}
+			viewModel.addPlayer(data);
+			viewModel.getScoreboard().createScoreboard(data);
+		}
+		
+		viewModel.getScoreboard().start();
+		
 	}
 
-	public void loadListeners() {
+	private void loadListeners() {
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerExperience(), this);
+		getServer().getPluginManager().registerEvents(new ChatEmoji(), this);
+		getServer().getPluginManager().registerEvents(new ChatTag(), this);
+	}
+	
+	private void loadCommands() {
+		//this.getCommand("suono").setExecutor(new PlaySoundCMD());
+		this.getCommand("afk").setExecutor(new Afk());
+		this.getCommand("ignore").setExecutor(new IgnoreCMD());
 	}
 	
 	public PluginViewModel getViewModel() {

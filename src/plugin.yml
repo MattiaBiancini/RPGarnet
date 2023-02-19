@@ -5,9 +5,9 @@ description: RPG implementation for Minecraft
 api-version: 1.19
 version: 0.0.1
 commands:
-   suono:
-      description: Commands to play sound
-      usage: /suono
-   attribute:
-      description: Commands to test attributes
-      usage: /attribute
+   afk:
+      description: Commands to go afk safe
+      usage: /afk
+   ignore:
+      description: Commands to ignore player\'s ping 
+      usage: /ignore [player|all]

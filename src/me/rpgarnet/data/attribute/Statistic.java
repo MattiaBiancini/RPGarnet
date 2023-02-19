@@ -34,6 +34,9 @@ public abstract class Statistic {
 		expToLevel = expToLevel();
 		attributeValue = attributeValue + additivePerLevel;
 		player.getAttribute(attribute).setBaseValue(attributeValue);
+		player.sendTitle(StringUtils.colorFixing("&6&l" + getStatsFromClass(this).getStatsName()), 
+				StringUtils.placeholder("&7You reached level&e %LEVEL%&7!", RPGarnet.instance.getViewModel().getPlayerData(player)), 
+				10, 60, 20);
 		
 		return true;
 	}

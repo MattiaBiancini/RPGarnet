@@ -27,17 +27,19 @@ public class PluginViewModel {
 	private FileConfiguration message;
 	private File playerF;
 	private FileConfiguration player;
-	
+
 	private List<PlayerData> data;
+	private List<Player> afks;
 
 	private TimeScheduler timeSchedule;
-	
+
 	private ScoreboardManager scoreboard;
 
 	public PluginViewModel() {
 
 		instance = RPGarnet.instance;
 		data = new ArrayList<>();
+		afks = new ArrayList<>();
 		loadFiles();
 		StringUtils.PREFIX = message.getString("prefix");
 		timeSchedule = new TimeScheduler(1);
@@ -93,7 +95,7 @@ public class PluginViewModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		PlayerData playerData = new PlayerData(player);
 		savePlayerData(playerData);
 
@@ -106,24 +108,24 @@ public class PluginViewModel {
 	 */
 	public void savePlayerData(PlayerData playerData) {
 
-		 new BukkitRunnable() {
+		new BukkitRunnable() {
 
-	            @Override
-	            public void run() {
-	                
-	            	for(int i = 0; i < playerData.getStats().length; i++) {
-	        			player.set(playerData.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".level", playerData.getStats()[i].getLevel());
-	        			player.set(playerData.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".experience", playerData.getStats()[i].getExperience());
-	        		}
-	        		try {
-	        			player.save(playerF);
-	        		} catch (IOException e) {
-	        			e.printStackTrace();
-	        		}
-	            	
-	            }
+			@Override
+			public void run() {
 
-	        }.runTaskAsynchronously(RPGarnet.instance);
+				for(int i = 0; i < playerData.getStats().length; i++) {
+					player.set(playerData.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".level", playerData.getStats()[i].getLevel());
+					player.set(playerData.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".experience", playerData.getStats()[i].getExperience());
+				}
+				try {
+					player.save(playerF);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+		}.runTaskAsynchronously(RPGarnet.instance);
 
 	}
 
@@ -136,7 +138,7 @@ public class PluginViewModel {
 
 		if(player.isOnline())
 			return searchPlayerData(player);
-		
+
 		PlayerData data;
 		Statistic[] stats = new Statistic[PlayerData.STATS_NUMBER];
 		for(int i = 0; i < PlayerData.STATS_NUMBER; i++) {
@@ -145,14 +147,22 @@ public class PluginViewModel {
 					this.player.getInt(player.getName() + ".stats." + Stats.getStats(i).toString().toLowerCase() + ".level"));
 		}
 		data = new PlayerData(player, stats);
-		
+
 		return data;
 
 	}
-	
+
+	/**
+	 * Retrives PlayerData from player.yml file and returns it.
+	 * @param player - player to look for data
+	 * @return player data if found
+	 */
 	public PlayerData loadPlayerData(Player player) {
-		
+
 		PlayerData data;
+		if(!isPlayerRegistered(player))
+			return null;
+
 		Statistic[] stats = new Statistic[PlayerData.STATS_NUMBER];
 		for(int i = 0; i < PlayerData.STATS_NUMBER; i++) {
 			stats[i] = Stats.getStatistic(Stats.getStats(i), player, 
@@ -160,11 +170,32 @@ public class PluginViewModel {
 					this.player.getInt(player.getName() + ".stats." + Stats.getStats(i).toString().toLowerCase() + ".level"));
 		}
 		data = new PlayerData(player, stats);
-		
+
 		return data;
-		
+
 	}
-	
+
+	/**
+	 * Saves all PlayerData in player.yml file.
+	 * Task is asynchronously
+	 */
+	public void saveAllData() {
+
+		for(PlayerData d : data) {
+
+			for(int i = 0; i < d.getStats().length; i++) {
+				player.set(d.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".level", d.getStats()[i].getLevel());
+				player.set(d.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".experience", d.getStats()[i].getExperience());
+			}
+			try {
+				player.save(playerF);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
 	/**
 	 * Adds player to the list of online players if not already exists
 	 * @param data - Player data to be added
@@ -175,7 +206,7 @@ public class PluginViewModel {
 			return false;
 		return this.data.add(data);
 	}
-	
+
 	/**
 	 * Remove player from the list of online players if exists
 	 * @param player - Player to remove from list
@@ -185,16 +216,48 @@ public class PluginViewModel {
 		for(PlayerData d : data) {
 			if(player.getName().equals(d.getPlayer().getName()))
 				data.remove(d);
-				return d;
+			return d;
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Retrives PlayerData from server rams
+	 * @param player - Player to look for data
+	 * @return PlayerData if found - null otherwise
+	 */
 	public PlayerData searchPlayerData(Player player) {
 		for(PlayerData d : data)
 			if(d.getPlayer().equals(player))
 				return d;
 		return null;
+	}
+
+	public boolean addAfkPlayer(Player player) {
+		if(isAfk(player))
+			return false;
+		afks.add(player);
+		return true;
+	}
+
+	public boolean removeAfkPlayer(Player player) {
+		if(!isAfk(player))
+			return false;
+		afks.remove(player);
+		return true;
+	}
+
+	public boolean switchAfk(Player player) {
+		if(isAfk(player)) {
+			afks.remove(player);
+			return false;
+		}
+		afks.add(player);
+		return true;
+	}
+
+	public boolean isAfk(Player player) {
+		return afks.contains(player);
 	}
 
 	public FileConfiguration getConfig() {
@@ -213,6 +276,14 @@ public class PluginViewModel {
 
 	public ScoreboardManager getScoreboard() {
 		return scoreboard;
+	}
+
+	public List<Player> getAfks() {
+		return afks;
+	}
+
+	public List<PlayerData> getData() {
+		return data;
 	}
 
 }
