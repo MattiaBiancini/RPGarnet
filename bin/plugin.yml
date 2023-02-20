@@ -3,7 +3,7 @@ author: Garnet14
 main: me.rpgarnet.RPGarnet
 description: RPG implementation for Minecraft
 api-version: 1.19
-version: 0.0.1
+version: 0.0.2
 commands:
    afk:
       description: Commands to go afk safe
@@ -11,3 +11,13 @@ commands:
    ignore:
       description: Commands to ignore player\'s ping 
       usage: /ignore [player|all]
+   home:
+      description: Commands to go home
+      usage: /home
+   sethome:
+      description: Commands to set home
+      usage: /sethome
+   rpg:
+      description: Commands to check info
+      usage: /rpg
+    

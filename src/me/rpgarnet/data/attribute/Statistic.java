@@ -35,7 +35,7 @@ public abstract class Statistic {
 		attributeValue = attributeValue + additivePerLevel;
 		player.getAttribute(attribute).setBaseValue(attributeValue);
 		player.sendTitle(StringUtils.colorFixing("&6&l" + getStatsFromClass(this).getStatsName()), 
-				StringUtils.placeholder("&7You reached level&e %LEVEL%&7!", RPGarnet.instance.getViewModel().getPlayerData(player)), 
+				StringUtils.placeholder("&7You reached level&e %LEVEL%&7!", RPGarnet.instance.getViewModel().getPlayerData(player), getStatsFromClass(this)), 
 				10, 60, 20);
 		
 		return true;
@@ -87,11 +87,23 @@ public abstract class Statistic {
 					getStatsFromClass(this)));
 			player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 5, 0);
 		}
+		else if(this.experience < 0 && level > 0) {
+			level--;
+			this.experience = expToLevel(level) + experience + this.experience;
+			this.expToLevel = expToLevel();
+			
+			PluginViewModel viewModel = RPGarnet.instance.getViewModel();
+			player.sendMessage(StringUtils.yamlString(
+					viewModel.getMessage().getString("leveldown"), 
+					viewModel.getPlayerData(player), 
+					getStatsFromClass(this)));
+			player.playSound(player, Sound.ENTITY_GHAST_SHOOT, 5, 0);
+		}
 	}
 	
 	public void removeExperience(int experience) {
 		this.experience = this.experience - experience;
-		if(this.experience < 0) {
+		if(this.experience < 0 && level > 0) {
 			level--;
 			this.experience = expToLevel(level) + experience;
 			

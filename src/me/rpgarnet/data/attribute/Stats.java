@@ -34,6 +34,26 @@ public enum Stats {
 		return -1;
 	}
 	
+	public int getIntValue() {
+		switch(this) {
+			case ARMOR:
+				return 0;
+			case ATTACK_SPEED:
+				return 1;
+			case DAMAGE:
+				return 2;
+			case HEALTH:
+				return 3;
+			case KNOCKBACK_RESISTANCE:
+				return 4;
+			case LUCK:
+				return 5;
+			case MOVEMENT_SPEED:
+				return 6;
+		}
+		return -1;
+	}
+	
 	public static Stats getStats(int value) {
 	    switch(value) {
 	        case 0:
@@ -60,16 +80,19 @@ public enum Stats {
 		switch(value.toUpperCase()) {
 	        case "ARMOR":
 	            return Stats.ARMOR;
+	        case "ATKSPEED":
 	        case "ATTACKSPEED":
 	            return Stats.ATTACK_SPEED;
 	        case "DAMAGE":
 	            return Stats.DAMAGE;
 	        case "HEALTH":
 	            return Stats.HEALTH;
+	        case "RESISTANCE":
 	        case "KNOCKBACKRESISTANCE":
 	            return Stats.KNOCKBACK_RESISTANCE;
 	        case "LUCK":
 	            return Stats.LUCK;
+	        case "SPEED":
 	        case "MOVEMENTSPEED":
 	            return Stats.MOVEMENT_SPEED;
 	        default:

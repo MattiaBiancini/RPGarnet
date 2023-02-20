@@ -40,80 +40,94 @@ import me.rpgarnet.data.attribute.Stats;
 import me.rpgarnet.utils.StringUtils;
 
 public class PlayerExperience implements Listener {
-	
+
 	public static Map<Player, Long> warning = new HashMap<>();
 	private static final int COOLDOWN = 60;
 	public static List<Player> sleeping = new ArrayList<>();
-	
+
 	@EventHandler
 	public void onOreBlockBreak(BlockBreakEvent e) {
-		
+
 		Block block = e.getBlock();
 		Player player = e.getPlayer();
 		if(block == null)
 			return;
-		
+
 		if(!isValueableBlock(block))
 			return;
 		if(player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH))
 			return;
-		
+
 		PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
 		data.getStats()[Stats.getIntValue(Stats.LUCK)].addExperience(getMaterialValue(block.getType()));
-		
+
 	}
-	
+
 	@EventHandler
 	public void onCropHarvestEvent(PlayerInteractEvent e) {
-		
+
 		Player player = e.getPlayer();
-		
+
 		PluginViewModel viewModel = RPGarnet.instance.getViewModel();
 		if(viewModel.isAfk(player)) {
 			e.setCancelled(true);
 			warningPlayer(player, viewModel);			
 		}
-		
+
 		Block block = e.getClickedBlock();
 		if(block == null)
 			return;
-		
+
 		if(!isCrop(block.getType()))
 			return;
-		
+
 		Ageable age = (Ageable) block.getBlockData();
+		/*		ItemStack hand = player.getInventory().getItemInMainHand();
+
+		if(hand.getType() == Material.BONE_MEAL) {
+			if(age.getAge() != age.getMaximumAge()) {
+				age.setAge(age.getMaximumAge());
+				block.setBlockData(age);
+				if(player.getGameMode() == GameMode.SURVIVAL)
+					hand.setAmount(hand.getAmount() - 1);
+				return;
+			}
+		}*/
+
 		if(age.getAge() != age.getMaximumAge())
 			return;
-		
+
 		age.setAge(0);
 		block.setBlockData(age);
-		
+
 		Location loc = block.getLocation();
 		loc.setX(loc.getBlockX() + 0.5);
 		loc.setY(loc.getBlockY() + 0.5);
 		loc.setZ(loc.getBlockZ() + 0.5);
-		
-		for(ItemStack item : block.getDrops(player.getInventory().getItemInMainHand(), player)) {
+
+		PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
+
+		for(ItemStack item : dropCrop(block.getType(), (int) data.getStats()[Stats.getIntValue(Stats.LUCK)].getAttributeValue())) {
 			loc.getWorld().dropItem(loc, item);
 		}
-		
-		PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
+
+
 		data.getStats()[Stats.getIntValue(Stats.LUCK)].addExperience(2);
-		
+
 	}
-	
+
 	@EventHandler
 	public void onShear(PlayerShearEntityEvent e) {
 		Player player = e.getPlayer();
 		PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
 		data.getStats()[Stats.getIntValue(Stats.LUCK)].addExperience(2);
 	}
-	
+
 	@EventHandler
 	public void onFish(PlayerFishEvent e) {
 		Player player = e.getPlayer();
 		PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
-		
+
 		Entity entity = e.getCaught();
 		if(entity instanceof Item) {
 			ItemStack item = ((Item)entity).getItemStack();
@@ -121,19 +135,19 @@ public class PlayerExperience implements Listener {
 			data.getStats()[Stats.getIntValue(Stats.LUCK)].addExperience(value);
 		}
 	}
-	
+
 	@EventHandler
 	public void onDealDamage(EntityDamageByEntityEvent e) {
-		
+
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player)
 			return;
-		
+
 		if(e.getDamager() instanceof AbstractArrow) {
-			
+
 			AbstractArrow arrow = (AbstractArrow) e.getDamager();
 			if(!(arrow.getShooter() instanceof Player))
 				return;
-			
+
 			Player player = (Player) arrow.getShooter();
 			Entity entity = e.getEntity();
 			if(isHostile(entity)) {
@@ -142,9 +156,9 @@ public class PlayerExperience implements Listener {
 				data.getStats()[Stats.getIntValue(Stats.ATTACK_SPEED)].addExperience(getHostileValue(entity));
 			}
 		}
-		
+
 		if(e.getDamager() instanceof Player) {
-			
+
 			Player player = (Player) e.getDamager();
 			Entity entity = e.getEntity();
 			if(isHostile(entity)) {
@@ -152,13 +166,13 @@ public class PlayerExperience implements Listener {
 				data.getStats()[Stats.getIntValue(Stats.DAMAGE)].addExperience(getHostileValue(entity));
 				data.getStats()[Stats.getIntValue(Stats.ATTACK_SPEED)].addExperience(getHostileValue(entity));
 			}
-			
+
 		}
 		else if(e.getEntity() instanceof Player) {
-			
+
 			Player player = (Player) e.getEntity();
 			Entity entity = e.getDamager();
-			
+
 			if(isHostile(entity)) {
 				PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
 				int health = (int) e.getDamage();
@@ -167,11 +181,11 @@ public class PlayerExperience implements Listener {
 				data.getStats()[Stats.getIntValue(Stats.ARMOR)].addExperience(armor);
 				data.getStats()[Stats.getIntValue(Stats.KNOCKBACK_RESISTANCE)].addExperience(armor);
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	@EventHandler
 	public void onPlayerDie(PlayerDeathEvent e) {
 		Player player = e.getEntity();
@@ -182,7 +196,7 @@ public class PlayerExperience implements Listener {
 		}
 		player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("death-message"), data));
 	}
-	
+
 	@EventHandler
 	public void onPlayerEat(PlayerItemConsumeEvent e) {
 		Player player = e.getPlayer();
@@ -194,19 +208,19 @@ public class PlayerExperience implements Listener {
 			player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("feed-information"), getFoodExperience(item.getType())));
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerAfkMove(PlayerMoveEvent e) {
-		
+
 		Player player = e.getPlayer();
 		PluginViewModel viewModel = RPGarnet.instance.getViewModel();
 		if(viewModel.isAfk(player)) {
 			e.setCancelled(true);
 			warningPlayer(player, viewModel);			
 		}
-		
+
 	}
-	
+
 	@EventHandler
 	public void onPlayerSleep(PlayerBedEnterEvent e) {
 		if(!(e.getBedEnterResult() == BedEnterResult.OK))
@@ -214,44 +228,85 @@ public class PlayerExperience implements Listener {
 		if(sleeping.contains(e.getPlayer()))
 			return;
 		sleeping.add(e.getPlayer());
-		if(sleeping.size() / (Bukkit.getOnlinePlayers().size() * 1.0) >= 0.5)
+		if(sleeping.size() * 2 - (Bukkit.getOnlinePlayers().size()) <= 0) {
 			Bukkit.getWorld("world").setTime(0);
-		Bukkit.getServer().broadcastMessage(StringUtils.yamlString(RPGarnet.instance.getViewModel().getMessage().getString("sleeping-50")));
+			Bukkit.getServer().broadcastMessage(StringUtils.yamlString(RPGarnet.instance.getViewModel().getMessage().getString("sleeping-50")));
+		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerSleep(PlayerBedLeaveEvent e) {
 		if(sleeping.contains(e.getPlayer()))
 			sleeping.remove(e.getPlayer());
-		
+
 	}
-	
+
 	private void warningPlayer(Player player, PluginViewModel viewModel) {
-		
+
 		if(!warning.containsKey(player)) {
-			player.sendTitle(StringUtils.colorFixing(viewModel.getMessage().getString("afk-info")), 
-					StringUtils.colorFixing(viewModel.getMessage().getString("afk-info-sub")), 20, 100, 40);
-			player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk-cancel")));
+			player.sendTitle(StringUtils.colorFixing(viewModel.getMessage().getString("afk.info")), 
+					StringUtils.colorFixing(viewModel.getMessage().getString("afk.info-sub")), 20, 100, 40);
+			player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk.cancel")));
 			warning.put(player, System.currentTimeMillis() - 2*COOLDOWN);
 		}
-		
+
 		long secondsLeft = ((warning.get(player) / 1000) + COOLDOWN) - (System.currentTimeMillis()/1000);
-		
+
 		if(secondsLeft < 0) {
-			
-			player.sendTitle(StringUtils.colorFixing(viewModel.getMessage().getString("afk-info")), 
-					StringUtils.colorFixing(viewModel.getMessage().getString("afk-info-sub")), 20, 100, 40);
-			player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk-cancel")));
+
+			player.sendTitle(StringUtils.colorFixing(viewModel.getMessage().getString("afk.info")), 
+					StringUtils.colorFixing(viewModel.getMessage().getString("afk.info-sub")), 20, 100, 40);
+			player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk.cancel")));
 			warning.put(player, System.currentTimeMillis());
-			
+
 		}
-		
+
 	}
-	
+
+	private List<ItemStack> dropCrop(Material mat, int luck) {
+
+		List<ItemStack> drops = new ArrayList<>();
+
+		if(mat == Material.CARROTS) {
+			ItemStack item = new ItemStack(Material.CARROT);
+			item.setAmount(drop(1, luck));
+			drops.add(item);
+		}
+		else if(mat == Material.POTATOES) {
+			ItemStack item = new ItemStack(Material.POTATO);
+			item.setAmount(drop(1, luck));
+			drops.add(item);
+			ItemStack seed = new ItemStack(Material.WHEAT_SEEDS);
+			if(Math.random() > 0.85)
+				drops.add(seed);
+		}
+		else if(mat == Material.WHEAT) {
+			ItemStack item = new ItemStack(Material.WHEAT);
+			item.setAmount(drop(1, luck));
+			drops.add(item);
+			ItemStack seed = new ItemStack(Material.WHEAT_SEEDS);
+			drops.add(seed);
+		}
+		else if(mat == Material.BEETROOTS) {
+			ItemStack item = new ItemStack(Material.BEETROOT);
+			item.setAmount(drop(1, luck));
+			drops.add(item);
+			ItemStack seed = new ItemStack(Material.BEETROOT_SEEDS);
+			drops.add(seed);
+		}
+		else if(mat == Material.NETHER_WART) {
+			ItemStack item = new ItemStack(Material.NETHER_WART);
+			item.setAmount(drop(1, luck));
+			drops.add(item);
+		}
+
+		return drops;
+	}
+
 	private static boolean isValueableBlock(Block block) {
-		
+
 		Material mat = block.getType();
-		
+
 		if(mat == Material.COAL_ORE)
 			return true;
 		if(mat == Material.COPPER_ORE)
@@ -294,12 +349,12 @@ public class PlayerExperience implements Listener {
 			return true;
 		if(mat == Material.MELON)
 			return true;
-		
+
 		return false;
 	}
-	
+
 	private static boolean isCrop(Material mat) {
-		
+
 		if(mat == Material.WHEAT)
 			return true;
 		if(mat == Material.POTATOES)
@@ -314,13 +369,13 @@ public class PlayerExperience implements Listener {
 			return true;
 		if(mat == Material.SWEET_BERRY_BUSH)
 			return true;
-		
+
 		return false;
-		
+
 	}
-	
+
 	private static int getMaterialValue(Material mat) {
-		
+
 		if(mat == Material.COAL_ORE)
 			return 5;
 		if(mat == Material.COPPER_ORE)
@@ -377,13 +432,13 @@ public class PlayerExperience implements Listener {
 			return 3;
 		if(mat == Material.LEATHER)
 			return 3;
-		
+
 		return 0;
-		
+
 	}
-	
+
 	private static boolean isHostile(Entity e) {
-		
+
 		EntityType type = e.getType();
 		if(type == EntityType.ZOMBIE)
 			return true;
@@ -454,12 +509,12 @@ public class PlayerExperience implements Listener {
 				return false;
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private static int getHostileValue(Entity e) {
-		
+
 		EntityType type = e.getType();
 		if(type == EntityType.ZOMBIE)
 			return 1;
@@ -523,12 +578,12 @@ public class PlayerExperience implements Listener {
 			return 60;
 		if(type == EntityType.WITHER)
 			return 50;
-		
+
 		return 0;
 	}
-	
+
 	public boolean isFood(Material mat) {
-		
+
 		if(mat == Material.ROTTEN_FLESH)
 			return true;
 		if(mat == Material.SPIDER_EYE)
@@ -599,13 +654,13 @@ public class PlayerExperience implements Listener {
 			return true;
 		if(mat == Material.TROPICAL_FISH)
 			return true;
-		
+
 		return false;
-		
+
 	}
-	
+
 	public int getFoodExperience(Material mat) {
-		
+
 		if(mat == Material.ROTTEN_FLESH)
 			return -10;
 		if(mat == Material.SPIDER_EYE)
@@ -676,9 +731,19 @@ public class PlayerExperience implements Listener {
 			return 4;
 		if(mat == Material.TROPICAL_FISH)
 			return 5;
-		
+
 		return 0;
+
+	}
+
+	private static int drop(int drops, int level) {
+
+		if(level == 0)
+			return drops;
 		
+		double rate = (1.0/(level + 2))+((level + 1)/2.0);
+
+		return (Math.random() + (int)(drops*rate) >= drops * rate) ? (int)(drops*rate) + 1 : (int)(drops*rate);
 	}
 
 }

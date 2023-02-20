@@ -31,7 +31,15 @@ public class StringUtils {
 	public static String placeholder(String message, PlayerData data) {
 		
 		message = message.replaceAll("%PLAYER%", data.getPlayer().getName());
-		message = message.replaceAll("%LEVEL%", data.getPlayer().getName());
+		
+		return colorFixing(message);
+	}
+	
+	public static String placeholder(String message, PlayerData data, Stats stats) {
+		
+		message = message.replaceAll("%PLAYER%", data.getPlayer().getName());
+		message = message.replaceAll("%LEVEL%", data.getStats()[stats.getIntValue()].getLevel() + "");
+		message = message.replaceAll("%SKILL%", capital(stats.toString()));
 		
 		return colorFixing(message);
 	}
@@ -49,6 +57,7 @@ public class StringUtils {
 	}
 
 	public static String yamlString(String string, PlayerData playerData, Stats stats) {
+		string = string.replaceAll("%LEVEL%", playerData.getStats()[stats.getIntValue()].getLevel() + "");
 		return yamlString(string.replaceAll("%SKILL%", capital(stats.toString())), playerData);
 	}
 

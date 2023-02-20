@@ -26,16 +26,15 @@ public class Afk implements CommandExecutor {
 			
 			if(viewModel.isAfk(player)) {
 				player.setGameMode(GameMode.SURVIVAL);
-				player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk-off"), data));
-				Bukkit.getServer().broadcastMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk-broadcast-off"), data));
+				player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk.off"), data));
+				Bukkit.getServer().broadcastMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk.broadcast.off"), data));
 				if(PlayerExperience.warning.containsKey(player))
 					PlayerExperience.warning.remove(player);
 			}
 			else {
 				player.setGameMode(GameMode.SPECTATOR);
-				player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk-on"), data));
-				player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk-cancel"), data));
-				Bukkit.getServer().broadcastMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk-broadcast-on"), data));
+				player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk.on"), data));
+				Bukkit.getServer().broadcastMessage(StringUtils.yamlString(viewModel.getMessage().getString("afk.broadcast-on"), data));
 			}
 			viewModel.switchAfk(player);
 			

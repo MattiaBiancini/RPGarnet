@@ -9,11 +9,11 @@ import org.bukkit.ChatColor;
 
 public class HexColor {
 	
-	public final Pattern HEX_PATTERN = Pattern.compile("&(#[A-Fa-f0-9]{6})");
-    public final char COLOR_CHAR = ChatColor.COLOR_CHAR;
-    public final int CENTER_PX = 60;
+	public static final Pattern HEX_PATTERN = Pattern.compile("&(#[A-Fa-f0-9]{6})");
+    public static final char COLOR_CHAR = ChatColor.COLOR_CHAR;
+    public static final int CENTER_PX = 60;
 
-    public String translateHexColorCodes(String startTag, String endTag, String message) {
+    public static String translateHexColorCodes(String startTag, String endTag, String message) {
         final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
         Matcher matcher = hexPattern.matcher(message);
         StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
@@ -28,11 +28,11 @@ public class HexColor {
         return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
     }
     
-    public String translateHexColorCodes(String message) {
+    public static String translateHexColorCodes(String message) {
         return translateHexColorCodes("&#", "", message);
     }
     
-    public String centeredMessage(String message) {
+    public static String centeredMessage(String message) {
             if(message == null || message.equals("")) return message;
                     message = translateHexColorCodes(message);
                    
@@ -61,13 +61,13 @@ public class HexColor {
                     int toCompensate = CENTER_PX - halvedMessageSize;
                     int spaceLength = DefaultFontInfo.SPACE.getLength() + 1;
                     int compensated = 0;
-                    String sb = "";
+                    String sb = "                    ";
                     while(compensated < toCompensate){
                             sb = sb + " ";
                             compensated += spaceLength;
                     }
                     
-                    return sb.toString() + message;
+                    return sb + message;
             }
     
 }

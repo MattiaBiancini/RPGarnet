@@ -2,7 +2,9 @@ package me.rpgarnet.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -42,15 +44,14 @@ public class PlayerListener implements Listener {
 
 		viewModel.addPlayer(data);
 		data.setPlayerAttributes();
-		HexColor stringUtils = new HexColor();
 
 		sb.createScoreboard(data);
 
-		player.sendMessage(stringUtils.centeredMessage("&6&l---=[&4&l" + StringUtils.PREFIX + "&6&l]=---"));
+		player.sendMessage(HexColor.centeredMessage("&6&l---=[&4&l " + StringUtils.PREFIX + "&6&l]=---"));
 		player.sendMessage(StringUtils.voidMessage());
-		player.sendMessage(stringUtils.centeredMessage(StringUtils.yamlString(viewModel.getMessage().getString("welcome"), data)));
+		player.sendMessage(HexColor.centeredMessage(StringUtils.placeholder(viewModel.getMessage().getString("welcome"), data)));
 		player.sendMessage(StringUtils.voidMessage());
-		player.sendMessage(stringUtils.centeredMessage("&6&l-----====[]====-----"));
+		player.sendMessage(HexColor.centeredMessage("&6&l-----====[]====-----"));
 
 
 
@@ -70,6 +71,13 @@ public class PlayerListener implements Listener {
 		
 		viewModel.savePlayerData(data);
 
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerType(AsyncPlayerChatEvent e) {
+		
+		e.setFormat(StringUtils.colorFixing("&e" + e.getPlayer().getName() + "&8» &7" + e.getMessage()));
+		
 	}
 
 }

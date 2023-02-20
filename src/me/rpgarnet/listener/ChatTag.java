@@ -12,10 +12,10 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import me.rpgarnet.commands.IgnoreCMD;
 
 public class ChatTag implements Listener {
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void chatEvent(AsyncPlayerChatEvent e) {
-		
+
 		if(e.isCancelled())
 			return;
 
@@ -23,17 +23,17 @@ public class ChatTag implements Listener {
 		String msg = e.getMessage();
 		msg = ChatColor.stripColor(msg);
 		ChatColor color = whatColor(player);
-		
+
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			
+
 			int index = msg.indexOf(p.getName());
 			if(index != -1 && player.canSee(p)) {
 				if(msg.equals(p.getName()) || (index == 0 && msg.indexOf(p.getName() + " ") != -1) || (index + p.getName().length() == msg.length() && msg.indexOf(" " + p.getName()) != -1) || msg.indexOf(" " + p.getName() + " ") != -1)
-				if(!IgnoreCMD.ingoreAll.contains(p.getName()) && (!IgnoreCMD.ingorePlayer.containsKey(p) || !IgnoreCMD.ingorePlayer.get(p).contains(e.getPlayer().getName()))) {
-					p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 100, 10);
-					msg = getMessage(msg, false, p, color);
-				} else
-					msg = getMessage(msg, true, p, color);
+					if(!IgnoreCMD.ingoreAll.contains(p.getName()) && (!IgnoreCMD.ingorePlayer.containsKey(p) || !IgnoreCMD.ingorePlayer.get(p).contains(e.getPlayer().getName()))) {
+						p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 100, 10);
+						msg = getMessage(msg, false, p, color);
+					} else
+						msg = getMessage(msg, true, p, color);
 			}
 		}
 
@@ -45,7 +45,7 @@ public class ChatTag implements Listener {
 
 	public ChatColor whatColor(Player player) {
 
-		return ChatColor.WHITE;
+		return ChatColor.GRAY;
 	}
 
 	public String getMessage(String msg, boolean silent, Player p, ChatColor color) {
@@ -53,23 +53,23 @@ public class ChatTag implements Listener {
 		String before = "";
 		String after = "";
 		String name = "";
-		
+
 		if(msg.indexOf(p.getName()) != 0) {
 			before = msg.substring(0, msg.indexOf(p.getName()));
 		}
-		
+
 		if(msg.indexOf(p.getName()) + p.getName().length() < msg.length()) {
 			after = msg.substring(msg.indexOf(p.getName()) + 1 + p.getName().length());
 		}
-		
+
 		if(msg.indexOf(p.getName()) + p.getName().length() < msg.length()) {
 			name = msg.substring(msg.indexOf(p.getName()), msg.indexOf(p.getName()) + 1 + p.getName().length());
 		}
 		else {
 			name = msg.substring(msg.indexOf(p.getName()));
 		}
-		
-		
+
+
 		if(silent)
 			name = name.replaceAll(p.getName(), "&b@" + p.getName() + color);
 		else

@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -27,6 +31,8 @@ public class PluginViewModel {
 	private FileConfiguration message;
 	private File playerF;
 	private FileConfiguration player;
+	private File homeF;
+	private FileConfiguration home;
 
 	private List<PlayerData> data;
 	private List<Player> afks;
@@ -52,6 +58,7 @@ public class PluginViewModel {
 		configF = new File(instance.getDataFolder(), "config.yml");
 		messageF = new File(instance.getDataFolder(), "message.yml");
 		playerF = new File(instance.getDataFolder(), "player.yml");
+		homeF = new File(instance.getDataFolder(), "home.yml");
 
 		if(!configF.exists()) {
 			configF.getParentFile().mkdirs();
@@ -67,10 +74,16 @@ public class PluginViewModel {
 			playerF.getParentFile().mkdirs();
 			instance.saveResource("player.yml", false);
 		}
+		
+		if(!homeF.exists()) {
+			homeF.getParentFile().mkdirs();
+			instance.saveResource("home.yml", false);
+		}
 
 		config = YamlConfiguration.loadConfiguration(configF);
 		message = YamlConfiguration.loadConfiguration(messageF);
 		player = YamlConfiguration.loadConfiguration(playerF);
+		home = YamlConfiguration.loadConfiguration(homeF);
 
 	}
 
@@ -234,6 +247,11 @@ public class PluginViewModel {
 		return null;
 	}
 
+	/**
+	 * Add player to the list of AFK players
+	 * @param player - Player to add
+	 * @return true if it has been added, false if already in afk list
+	 */
 	public boolean addAfkPlayer(Player player) {
 		if(isAfk(player))
 			return false;
@@ -241,6 +259,11 @@ public class PluginViewModel {
 		return true;
 	}
 
+	/**
+	 * Remove player from list of AFK players
+	 * @param player - Player to remove
+	 * @return true if it has been removed, false if not found
+	 */
 	public boolean removeAfkPlayer(Player player) {
 		if(!isAfk(player))
 			return false;
@@ -248,6 +271,11 @@ public class PluginViewModel {
 		return true;
 	}
 
+	/**
+	 * Adds player in AFK list if not in it, remove if player is in
+	 * @param player - Player to add/remove
+	 * @return true if it has added, false if it has removed
+	 */
 	public boolean switchAfk(Player player) {
 		if(isAfk(player)) {
 			afks.remove(player);
@@ -257,8 +285,43 @@ public class PluginViewModel {
 		return true;
 	}
 
+	/**
+	 * Checks if player is AFK
+	 * @param player
+	 * @return true if is afk
+	 */
 	public boolean isAfk(Player player) {
 		return afks.contains(player);
+	}
+	
+	public void addHome(Player player, Location location) {
+		
+		home.set(player.getName() + ".world", location.getWorld().getName());
+		home.set(player.getName() + ".X", location.getBlockX());
+		home.set(player.getName() + ".Y", location.getBlockY());
+		home.set(player.getName() + ".Z", location.getBlockZ());
+		home.set(player.getName() + ".yaw", location.getYaw());
+		home.set(player.getName() + ".pitch", location.getPitch());
+		try {
+			home.save(homeF);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public Location getHome(Player player) {
+		if(home.getConfigurationSection(player.getName()) == null)
+			return null;
+		ConfigurationSection loc = home.getConfigurationSection(player.getName());
+		World world = Bukkit.getWorld(loc.getString("world"));
+		int x = loc.getInt("X");
+		int y = loc.getInt("Y");
+		int z = loc.getInt("Z");
+		float yaw = (float) loc.getDouble("yaw");
+		float pitch = (float) loc.getDouble("pitch");
+		
+		return new Location(world, x + 0.5, y, z + 0.5, yaw, pitch);
 	}
 
 	public FileConfiguration getConfig() {
@@ -269,6 +332,9 @@ public class PluginViewModel {
 	}
 	public FileConfiguration getPlayer() {
 		return player;
+	}
+	public FileConfiguration getHome() {
+		return home;
 	}
 
 	public TimeScheduler getTimeSchedule() {
