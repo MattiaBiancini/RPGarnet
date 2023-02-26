@@ -2,9 +2,8 @@ package me.rpgarnet.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -62,9 +61,9 @@ public class PlayerListener implements Listener {
 
 		Player player = e.getPlayer();
 		PluginViewModel viewModel = RPGarnet.instance.getViewModel();
-		PlayerData data = viewModel.removePlayer(player);
-		e.setQuitMessage(StringUtils.colorFixing("&8[&c-&8] &7" + player.getName()));
 		ScoreboardHandler.removePlayerScoreboard(player);
+		PlayerData data = viewModel.getPlayerData(player);
+		e.setQuitMessage(StringUtils.colorFixing("&8[&c-&8] &7" + player.getName()));
 
 		if(data == null)
 			return;
@@ -73,11 +72,18 @@ public class PlayerListener implements Listener {
 
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerType(AsyncPlayerChatEvent e) {
+	@EventHandler
+	public void onPlayerClickInfo(InventoryClickEvent e) {
 		
-		e.setFormat(StringUtils.colorFixing("&e" + e.getPlayer().getName() + "&8» &7" + e.getMessage()));
+		if(e.getInventory().getHolder() != null)
+			return;
+		
+		Player player = (Player) e.getWhoClicked();
+		
+		if(e.getView().getTitle().equalsIgnoreCase(StringUtils.colorFixing("&4&l" + player.getName() + "'s Stats"))) {
+			e.setCancelled(true);
+		}
 		
 	}
-
+	
 }

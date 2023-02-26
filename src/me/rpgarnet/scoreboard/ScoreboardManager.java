@@ -1,5 +1,7 @@
 package me.rpgarnet.scoreboard;
 
+import java.text.DecimalFormat;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,6 +18,8 @@ import me.rpgarnet.data.attribute.Stats;
 import me.rpgarnet.utils.StringUtils;
 
 public class ScoreboardManager {
+	
+	private static final DecimalFormat DF = new DecimalFormat("0.000");
 
 	/**
 	 * Create a scoreboard for player and adds it to the scoreboard list
@@ -40,7 +44,7 @@ public class ScoreboardManager {
         		scoreboard.registerNewTeam("§" + Stats.getIntValue(s));
         	scoreboard.getTeam(s.getStatsName()).addEntry(s.getStatsName());
         	scoreboard.getTeam(s.getStatsName()).setPrefix("§6§l" + s.getIcon() + "§6 ");
-        	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§6" + data.getStats()[Stats.getIntValue(s)].getAttributeValue());
+        	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§6" + DF.format(data.getStats()[Stats.getIntValue(s)].getAttributeValue()));
         	objective.getScore(s.getStatsName()).setScore(14 - 2 * Stats.getIntValue(s));
         	scoreboard.getTeam("§" + Stats.getIntValue(s)).addEntry("§" + Stats.getIntValue(s));
         	scoreboard.getTeam("§" + Stats.getIntValue(s)).setSuffix(StringUtils.percentageExp(data, Stats.getIntValue(s)));
@@ -57,7 +61,9 @@ public class ScoreboardManager {
     	PluginViewModel viewModel = RPGarnet.instance.getViewModel();
     	
         for (PlayerData data : viewModel.getData()) {
-
+        	if(data.getPlayer() == null)
+        		continue;
+        	
             Scoreboard scoreboard = ScoreboardHandler.getPlayerScoreboard(data.getPlayer());
             if(scoreboard == null) {
             	createScoreboard(data);
@@ -68,7 +74,7 @@ public class ScoreboardManager {
             	if(scoreboard.getTeam(s.getStatsName()) == null)
             		scoreboard.registerNewTeam(s.getStatsName());
             	scoreboard.getTeam(s.getStatsName()).setPrefix("§6§l" + s.getIcon() + "§6 ");
-            	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§6" + data.getStats()[Stats.getIntValue(s)].getAttributeValue());
+            	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§6" + DF.format(data.getStats()[Stats.getIntValue(s)].getAttributeValue()));
             	if(choice)
             		scoreboard.getTeam("§" + Stats.getIntValue(s)).setSuffix(StringUtils.percentageExp(data, Stats.getIntValue(s)));
             	else {

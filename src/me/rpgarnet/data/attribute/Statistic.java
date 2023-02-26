@@ -1,5 +1,8 @@
 package me.rpgarnet.data.attribute;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -16,19 +19,19 @@ public abstract class Statistic {
 	protected double additivePerLevel;
 	protected double baseAttribute;
 	protected double attributeValue;
-	
+
 	protected int experience;
 	protected int level;
 	protected int expToLevel;
-	
+
 	protected Player player;
 	protected Attribute attribute;
-	
+
 	public boolean levelUp() {
-		
+
 		if(!canLevelUp())
 			return false;
-		
+
 		experience = experience - expToLevel;
 		level++;
 		expToLevel = expToLevel();
@@ -37,7 +40,7 @@ public abstract class Statistic {
 		player.sendTitle(StringUtils.colorFixing("&6&l" + getStatsFromClass(this).getStatsName()), 
 				StringUtils.placeholder("&7You reached level&e %LEVEL%&7!", RPGarnet.instance.getViewModel().getPlayerData(player), getStatsFromClass(this)), 
 				10, 60, 20);
-		
+
 		return true;
 	}
 
@@ -70,13 +73,13 @@ public abstract class Statistic {
 			return (int) (expToLevel(level - 1) * rate);
 
 	}
-	
+
 	public static double calculateAttributeLevel(int level, double baseAttribute, double additivePerLevel) {
 		if(level == 0)
 			return baseAttribute;
-		return additivePerLevel + calculateAttributeLevel(level -1, baseAttribute, additivePerLevel);
+		return additivePerLevel + calculateAttributeLevel(level -1, baseAttribute, additivePerLevel) ;
 	}
-	
+
 	public void addExperience(int experience) {
 		this.experience = this.experience + experience;
 		if(levelUp()) {
@@ -91,7 +94,7 @@ public abstract class Statistic {
 			level--;
 			this.experience = expToLevel(level) + experience + this.experience;
 			this.expToLevel = expToLevel();
-			
+
 			PluginViewModel viewModel = RPGarnet.instance.getViewModel();
 			player.sendMessage(StringUtils.yamlString(
 					viewModel.getMessage().getString("leveldown"), 
@@ -100,13 +103,13 @@ public abstract class Statistic {
 			player.playSound(player, Sound.ENTITY_GHAST_SHOOT, 5, 0);
 		}
 	}
-	
+
 	public void removeExperience(int experience) {
 		this.experience = this.experience - experience;
 		if(this.experience < 0 && level > 0) {
 			level--;
 			this.experience = expToLevel(level) + experience;
-			
+
 			PluginViewModel viewModel = RPGarnet.instance.getViewModel();
 			player.sendMessage(StringUtils.yamlString(
 					viewModel.getMessage().getString("leveldown"), 
@@ -114,28 +117,28 @@ public abstract class Statistic {
 					getStatsFromClass(this)));
 			player.playSound(player, Sound.ENTITY_GHAST_SHOOT, 5, 0);
 		}
-		
+
 	}
-	
+
 	public void deathReset() {
-		
+
 		if(experience > 0) {
 			experience = 0;
 			return;
 		}
-		
+
 		if(level == 0)
 			return;
-		
+
 		level--;
-		
+
 	}
-	
+
 	public double getPercentage() {
 		return (experience * 1.0)/expToLevel();
 	}
-	
-	private static Stats getStatsFromClass(Statistic statistic) {
+
+	public static Stats getStatsFromClass(Statistic statistic) {
 		if(statistic instanceof Armor)
 			return Stats.ARMOR;
 		if(statistic instanceof AttackSpeed)
@@ -151,6 +154,40 @@ public abstract class Statistic {
 		if(statistic instanceof MovementSpeed)
 			return Stats.MOVEMENT_SPEED;
 		return null;
+	}
+
+	public static List<String> getDescription(Statistic statistic) {
+		List<String> desc = new ArrayList<>();
+		if(statistic instanceof Armor) {
+			desc.add(StringUtils.colorFixing("&7You get &e1 &7experience point for each &ehalf heart &7of true damage!"));
+			desc.add(StringUtils.colorFixing("")); //&7This statistic increase you base &earmor
+		}
+		else if(statistic instanceof AttackSpeed) {
+			desc.add(StringUtils.colorFixing("&7You get &e1 &7experience point for each &ehalf heart &7damage dealth!"));
+			desc.add(StringUtils.colorFixing("&7This statistic increase you base &eattack speed"));
+		}
+		else if(statistic instanceof Damage) {
+			desc.add(StringUtils.colorFixing("&7You get &e1 &7experience point for each &ehalf heart &7damage dealth!"));
+			desc.add(StringUtils.colorFixing("&7This statistic increase you base &edamage"));
+		}
+		else if(statistic instanceof Health) {
+			desc.add(StringUtils.colorFixing("&7You get &e1 &7experience point for each &ehalf heart &7of damage!"));
+			desc.add(StringUtils.colorFixing("&7This statistic increase your &emax health"));
+		}
+		else if(statistic instanceof KnockbackResistance) {
+			desc.add(StringUtils.colorFixing("&7You get &e1 &7experience point for each &ehalf heart &7of true damage!"));
+			desc.add(StringUtils.colorFixing("&7This statistic increase your &eknockback resistence"));
+		}
+		else if(statistic instanceof Luck) {
+			desc.add(StringUtils.colorFixing("&7You get &edifferent &7experience point depending by which ore you mine!"));
+			desc.add(StringUtils.colorFixing("&7You can get experience even &eright clicking &7crops, &eshearing &7sheep or &efishing&7."));
+			desc.add(StringUtils.colorFixing("&7This statistic increase you base &eluck"));
+		}
+		else if(statistic instanceof MovementSpeed) {
+			desc.add(StringUtils.colorFixing("&7You get &edifferent &7experience point depending on which food you eat!"));
+			desc.add(StringUtils.colorFixing("&7This statistic increase you base &emovement speed"));
+		}
+		return desc;
 	}
 
 	public int getBaseExpLevelUp() {

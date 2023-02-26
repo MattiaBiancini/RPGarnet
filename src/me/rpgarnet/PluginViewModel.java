@@ -29,10 +29,9 @@ public class PluginViewModel {
 	private FileConfiguration config;
 	private File messageF;
 	private FileConfiguration message;
-	private File playerF;
-	private FileConfiguration player;
 	private File homeF;
 	private FileConfiguration home;
+	private File playerDataFolder;
 
 	private List<PlayerData> data;
 	private List<Player> afks;
@@ -55,9 +54,13 @@ public class PluginViewModel {
 
 	public void loadFiles() {
 
+		playerDataFolder = new File(instance.getDataFolder(), "PlayerData");
+		if (!playerDataFolder.exists()) {
+			playerDataFolder.mkdir();
+		}
+
 		configF = new File(instance.getDataFolder(), "config.yml");
 		messageF = new File(instance.getDataFolder(), "message.yml");
-		playerF = new File(instance.getDataFolder(), "player.yml");
 		homeF = new File(instance.getDataFolder(), "home.yml");
 
 		if(!configF.exists()) {
@@ -70,11 +73,6 @@ public class PluginViewModel {
 			instance.saveResource("message.yml", false);
 		}
 
-		if(!playerF.exists()) {
-			playerF.getParentFile().mkdirs();
-			instance.saveResource("player.yml", false);
-		}
-		
 		if(!homeF.exists()) {
 			homeF.getParentFile().mkdirs();
 			instance.saveResource("home.yml", false);
@@ -82,7 +80,6 @@ public class PluginViewModel {
 
 		config = YamlConfiguration.loadConfiguration(configF);
 		message = YamlConfiguration.loadConfiguration(messageF);
-		player = YamlConfiguration.loadConfiguration(playerF);
 		home = YamlConfiguration.loadConfiguration(homeF);
 
 	}
@@ -93,7 +90,8 @@ public class PluginViewModel {
 	 * @return - True if player is found - False if not found
 	 */
 	public boolean isPlayerRegistered(Player player) {
-		return this.player.contains(player.getName());
+		File playerFile = new File(playerDataFolder, player.getName() + ".yml");
+		return playerFile.exists();
 	}
 
 	/**
@@ -102,16 +100,24 @@ public class PluginViewModel {
 	 */
 	public PlayerData registerNewPlayer(Player player) {
 
-		this.player.set(player.getName() + ".UUID", player.getUniqueId().toString());
+		File playerFile = new File(playerDataFolder, player.getName() + ".yml");
+		if(!playerFile.exists())
+			try {
+				playerFile.createNewFile();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
+
+		playerConfig.set("UUID", player.getUniqueId().toString());
 		try {
-			this.player.save(playerF);
+			playerConfig.save(playerFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		PlayerData playerData = new PlayerData(player);
 		savePlayerData(playerData);
-
 		return playerData;
 	}
 
@@ -126,15 +132,18 @@ public class PluginViewModel {
 			@Override
 			public void run() {
 
-				for(int i = 0; i < playerData.getStats().length; i++) {
-					player.set(playerData.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".level", playerData.getStats()[i].getLevel());
-					player.set(playerData.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".experience", playerData.getStats()[i].getExperience());
-					try {
-						player.save(playerF);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}				
+				File playerFile = new File(playerDataFolder, playerData.getPlayer().getName() + ".yml");
+	            FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
+
+	            for (int i = 0; i < playerData.getStats().length; i++) {
+	                playerConfig.set("stats." + Stats.getStats(i).toString() + ".level", playerData.getStats()[i].getLevel());
+	                playerConfig.set("stats." + Stats.getStats(i).toString() + ".experience", playerData.getStats()[i].getExperience());
+	            }
+	            try {
+	                playerConfig.save(playerFile);
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
 
 			}
 
@@ -149,15 +158,26 @@ public class PluginViewModel {
 	 */
 	public PlayerData getPlayerData(Player player) {
 
+		PlayerData data = null;
+		
 		if(player.isOnline())
-			return searchPlayerData(player);
+			data = searchPlayerData(player);
+		
+		if(data != null)
+			return data;
 
-		PlayerData data;
+		File playerFile = new File(playerDataFolder, player.getName() + ".yml");
+	    if (!playerFile.exists()) {
+	        return null;
+	    }
+	    FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
+		
+		
 		Statistic[] stats = new Statistic[PlayerData.STATS_NUMBER];
 		for(int i = 0; i < PlayerData.STATS_NUMBER; i++) {
 			stats[i] = Stats.getStatistic(Stats.getStats(i), player, 
-					this.player.getInt(player.getName() + ".stats." + Stats.getStats(i).toString().toLowerCase() + ".experience"), 
-					this.player.getInt(player.getName() + ".stats." + Stats.getStats(i).toString().toLowerCase() + ".level"));
+					playerConfig.getInt("stats." + Stats.getStats(i).toString().toLowerCase() + ".experience"), 
+					playerConfig.getInt("stats." + Stats.getStats(i).toString().toLowerCase() + ".level"));
 		}
 		data = new PlayerData(player, stats);
 
@@ -172,18 +192,25 @@ public class PluginViewModel {
 	 */
 	public PlayerData loadPlayerData(Player player) {
 
-		PlayerData data;
 		if(!isPlayerRegistered(player))
 			return null;
 
+		PlayerData data;
+		File playerFile = new File(playerDataFolder, player.getName() + ".yml");
+	    if (!playerFile.exists()) {
+	        return null;
+	    }
+	    FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
+		
+		
 		Statistic[] stats = new Statistic[PlayerData.STATS_NUMBER];
 		for(int i = 0; i < PlayerData.STATS_NUMBER; i++) {
 			stats[i] = Stats.getStatistic(Stats.getStats(i), player, 
-					this.player.getInt(player.getName() + ".stats." + Stats.getStats(i).toString().toLowerCase() + ".experience"), 
-					this.player.getInt(player.getName() + ".stats." + Stats.getStats(i).toString().toLowerCase() + ".level"));
+					playerConfig.getInt("stats." + Stats.getStats(i).toString().toLowerCase() + ".experience"), 
+					playerConfig.getInt("stats." + Stats.getStats(i).toString().toLowerCase() + ".level"));
 		}
 		data = new PlayerData(player, stats);
-
+		
 		return data;
 
 	}
@@ -194,18 +221,19 @@ public class PluginViewModel {
 	 */
 	public void saveAllData() {
 
-		for(PlayerData d : data) {
+		for(PlayerData playerData : data) {
+			File playerFile = new File(playerDataFolder, playerData.getPlayer().getName() + ".yml");
+            FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
 
-			for(int i = 0; i < d.getStats().length; i++) {
-				player.set(d.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".level", d.getStats()[i].getLevel());
-				player.set(d.getPlayer().getName() + ".stats." + Stats.getStats(i).toString() + ".experience", d.getStats()[i].getExperience());
-				try {
-					player.save(playerF);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
+            for (int i = 0; i < playerData.getStats().length; i++) {
+                playerConfig.set("stats." + Stats.getStats(i).toString() + ".level", playerData.getStats()[i].getLevel());
+                playerConfig.set("stats." + Stats.getStats(i).toString() + ".experience", playerData.getStats()[i].getExperience());
+            }
+            try {
+                playerConfig.save(playerFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 		}
 
 	}
@@ -293,9 +321,9 @@ public class PluginViewModel {
 	public boolean isAfk(Player player) {
 		return afks.contains(player);
 	}
-	
+
 	public void addHome(Player player, Location location) {
-		
+
 		home.set(player.getName() + ".world", location.getWorld().getName());
 		home.set(player.getName() + ".X", location.getBlockX());
 		home.set(player.getName() + ".Y", location.getBlockY());
@@ -307,9 +335,9 @@ public class PluginViewModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public Location getHome(Player player) {
 		if(home.getConfigurationSection(player.getName()) == null)
 			return null;
@@ -320,7 +348,7 @@ public class PluginViewModel {
 		int z = loc.getInt("Z");
 		float yaw = (float) loc.getDouble("yaw");
 		float pitch = (float) loc.getDouble("pitch");
-		
+
 		return new Location(world, x + 0.5, y, z + 0.5, yaw, pitch);
 	}
 
@@ -329,9 +357,6 @@ public class PluginViewModel {
 	}
 	public FileConfiguration getMessage() {
 		return message;
-	}
-	public FileConfiguration getPlayer() {
-		return player;
 	}
 	public FileConfiguration getHome() {
 		return home;

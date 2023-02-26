@@ -60,6 +60,15 @@ public class PlayerExperience implements Listener {
 
 		PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
 		data.getStats()[Stats.getIntValue(Stats.LUCK)].addExperience(getMaterialValue(block.getType()));
+		e.setDropItems(false);
+		Location loc = block.getLocation();
+		loc.setX(loc.getBlockX() + 0.5);
+		loc.setY(loc.getBlockY() + 0.5);
+		loc.setZ(loc.getBlockZ() + 0.5);
+		for(ItemStack item : e.getBlock().getDrops(player.getInventory().getItemInMainHand(), player)) {
+			item.setAmount(item.getAmount() + (data.getStats()[Stats.getIntValue(Stats.LUCK)].getLevel()/10));
+			loc.getWorld().dropItem(loc, item);
+		}
 
 	}
 
@@ -142,24 +151,13 @@ public class PlayerExperience implements Listener {
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player)
 			return;
 
-		if(e.getDamager() instanceof AbstractArrow) {
+		if(e.getDamager() instanceof Player || (e.getDamager() instanceof AbstractArrow && ((AbstractArrow) e.getDamager()).getShooter() instanceof Player)) {
 
-			AbstractArrow arrow = (AbstractArrow) e.getDamager();
-			if(!(arrow.getShooter() instanceof Player))
-				return;
-
-			Player player = (Player) arrow.getShooter();
-			Entity entity = e.getEntity();
-			if(isHostile(entity)) {
-				PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
-				data.getStats()[Stats.getIntValue(Stats.DAMAGE)].addExperience(getHostileValue(entity));
-				data.getStats()[Stats.getIntValue(Stats.ATTACK_SPEED)].addExperience(getHostileValue(entity));
-			}
-		}
-
-		if(e.getDamager() instanceof Player) {
-
-			Player player = (Player) e.getDamager();
+			Player player;
+			if(e.getDamager() instanceof Player)
+				player = (Player) e.getDamager();
+			else
+				player = (Player) ((AbstractArrow) e.getDamager()).getShooter();
 			Entity entity = e.getEntity();
 			if(isHostile(entity)) {
 				PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
@@ -168,9 +166,13 @@ public class PlayerExperience implements Listener {
 			}
 
 		}
-		else if(e.getEntity() instanceof Player) {
+		else if(e.getEntity() instanceof Player || (e.getEntity() instanceof AbstractArrow && !(((AbstractArrow) e.getEntity()).getShooter() instanceof Player))) {
 
-			Player player = (Player) e.getEntity();
+			Player player; 
+			if(e.getEntity() instanceof Player)
+				player = (Player) e.getEntity();
+			else
+				player = (Player) ((AbstractArrow) e.getEntity()).getShooter();
 			Entity entity = e.getDamager();
 
 			if(isHostile(entity)) {
@@ -276,7 +278,7 @@ public class PlayerExperience implements Listener {
 			ItemStack item = new ItemStack(Material.POTATO);
 			item.setAmount(drop(1, luck));
 			drops.add(item);
-			ItemStack seed = new ItemStack(Material.WHEAT_SEEDS);
+			ItemStack seed = new ItemStack(Material.POISONOUS_POTATO);
 			if(Math.random() > 0.85)
 				drops.add(seed);
 		}
@@ -578,6 +580,13 @@ public class PlayerExperience implements Listener {
 			return 60;
 		if(type == EntityType.WITHER)
 			return 50;
+		if(e instanceof Projectile) {
+			Projectile proj = (Projectile) e;
+			Entity entity = (Entity) proj.getShooter();
+			if(entity instanceof Player)
+				return 0;
+			return getHostileValue(entity);
+		}
 
 		return 0;
 	}

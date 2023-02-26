@@ -71,11 +71,6 @@ public class RPGarnet extends JavaPlugin {
 	}
 	
 	private void loadCommands() {
-		//this.getCommand("suono").setExecutor(new PlaySoundCMD());
-		this.getCommand("afk").setExecutor(new Afk());
-		this.getCommand("ignore").setExecutor(new IgnoreCMD());
-		this.getCommand("home").setExecutor(new Home());
-		this.getCommand("sethome").setExecutor(new Sethome());
 		this.getCommand("rpg").setExecutor(new InfoPlayer());
 		this.getCommand("rpg").setTabCompleter(new InfoPlayer());
 	}
