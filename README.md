@@ -181,6 +181,7 @@ To **gain experience points**, you need to eat.
 | Apple | 5 |
 | Tropical Fish | 5 |
 | Cookie | 5 |
+| Pumpkin Pie | 8 |
 | Bread | 10 |
 | Carrot | 10 |
 | Beetroot Soup | 10 |
