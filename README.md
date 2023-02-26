@@ -83,3 +83,4 @@ To **gain experience points**, you need to eat.
 | Base | 0.075 |
 | Additive | 0.005 |
 | Max Level | 32 |
+
