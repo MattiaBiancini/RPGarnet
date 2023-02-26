@@ -29,7 +29,7 @@ You gain **1 experience point** for every **half-heart of damage you deal to hos
 | Attack Speed Info | Values |
 | ------------ | ------------ |
 | Base | 2 |
-| Additive | 0.5 |
+| Additive | 1.5 |
 | Max Level | 50 |
 
 ## Damage
@@ -39,7 +39,7 @@ You gain **1 experience point** for every **half-heart of damage you deal to hos
 | Damage Info | Values |
 | ------------ | ------------ |
 | Base | 1 |
-| Additive | 0.5 |
+| Additive | 1.5 |
 | Max Level | 100 |
 ## Health
 This statistic modifies the player's base **HP**. Compared to the original value, this statistic has been halved at the beginning and then reaches the same value at level 10. 
