@@ -84,3 +84,116 @@ To **gain experience points**, you need to eat.
 | Additive | 0.005 |
 | Max Level | 32 |
 
+## Table Chart
+### Attack Speed & Damage
+| Mob | Experience |
+| ------------ | ------------ |     
+| Zombie | 1 |
+| Husk | 1 |
+| Zombie Villager | 1 |
+| Creeper | 1 |
+| Spider | 1 |
+| Endermite | 1 |
+| Piglin | 1 |
+| Zombified Piglin | 1 |
+| Drowned | 1 |
+| Magma Cube | 1 |
+| Phantom | 1 |
+| Silverfish | 1 |
+| Vex | 1 |
+| Skeleton | 2 |
+| Cave Spider | 2 |
+| Guardian | 2 |
+| Illusioner | 2 |
+| Shulker | 2 |
+| Vindicator | 2 |
+| Wither Skeleton | 3 |
+| Piglin Brute | 3 |
+| Witch | 4 |
+| Pillager | 5 |
+| Blaze | 7 |
+| Ghast | 8 |
+| Evoker | 10 |
+| Elder Guardian | 25 |
+| Ender Dragon | 40 |
+| Wither | 50 |
+| Warden | 60 |
+
+### Luck
+| Ore | Experience |
+| ------------ | ------------ |
+| Coal | 5 |
+| Deep Coal | 6 |
+| Copper | 6 |
+| Deep Copper | 7 |
+| Nether Gold | 9 |
+| Lapis | 10 |
+| Deep Lapis | 11 |
+| Redstone | 15 |
+| Nether Quartz | 15 |
+| Deep Redstone | 17 |
+| Iron | 20 |
+| Deep Iron | 25 |
+| Gold | 40 |
+| Deep Gold | 45 |
+| Diamond | 50 |
+| Deep Diamond | 55 |
+| Emerald | 60 |
+| Deep Emerald | 65 |
+| Ancient Debris | 100 |
+
+| Fishing | Experience |
+| ------------ | ------------ |
+| Cod | 1 |
+| Salmon | 1 |
+| Tripwire Hook | 3 |
+| Leather | 3 |
+| Pufferfish | 5 |
+| Nautilus Shell | 8 |
+| Enchanted Book | 10 |
+
+| Other | Experience |
+| ------------ | ------------ |
+| Crop | 2 |
+| Shear | 2 |
+
+###Movement Speed
+| Food | Experience |
+| ------------ | ------------ |
+| Spider Eye | -20 |
+| Pufferfish | -15 |
+| Poisonous Potato | -15 |
+| Rotten Flesh | -10 |
+| Beef | -5 |
+| Chicken | -5 |
+| Cod | -5 |
+| Mutton | -5 |
+| Porkchop | -5 |
+| Rabbit | -5 |
+| Salmon | -5 |
+| Potato | -5 |
+| Dried Kelp | -5 |
+| Melon Slice | 1 |
+| Beetroot | 1 |
+| Cake | 2 |
+| Sweet Berry | 4 |
+| Golden Apple | 5 |
+| Apple | 5 |
+| Tropical Fish | 5 |
+| Cookie | 5 |
+| Bread | 10 |
+| Carrot | 10 |
+| Beetroot Soup | 10 |
+| Baked Potato | 15 |
+| Glow Berries | 20 |
+| Cooked Salmon | 25 |
+| Cooked Chicken | 25 |
+| Cooked Salmon | 25 |
+| Cooked Cod | 25 |
+| Cooked Mutton | 25 |
+| Cooked Beef | 30 |
+| Cooked Porkchop | 35 |
+| Cooked Rabbit | 40 |
+| Mushroom Stew | 50 |
+| Golden Carrot | 80 |
+| Chorus Fruit | Random between 1 and 10 |
