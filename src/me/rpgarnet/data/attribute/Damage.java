@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 public class Damage extends Statistic {
 	
 	private static final int BASE_EXP_LEVEL_UP = 100;
-	private static final int MAX_LEVEL = 4094;
-	private static final double RATE = 1.2;
+	private static final int MAX_LEVEL = 100;
+	private static final double RATE = 1.5;
 	private static final double ADDITIVE = 0.5;
 	private static final double BASE = 1.0;
 	

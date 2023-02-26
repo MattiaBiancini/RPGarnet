@@ -5,8 +5,8 @@ import org.bukkit.entity.Player;
 
 public class Health extends Statistic {
 	
-	private static final int BASE_EXP_LEVEL_UP = 50;
-	private static final int MAX_LEVEL = 1023;
+	private static final int BASE_EXP_LEVEL_UP = 100;
+	private static final int MAX_LEVEL = 50;
 	private static final double RATE = 1.25;
 	private static final double ADDITIVE = 1.0;
 	private static final double BASE = 10.0;

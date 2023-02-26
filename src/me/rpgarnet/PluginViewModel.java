@@ -35,9 +35,8 @@ public class PluginViewModel {
 
 	private List<PlayerData> data;
 	private List<Player> afks;
-
+	
 	private TimeScheduler timeSchedule;
-
 	private ScoreboardManager scoreboard;
 
 	public PluginViewModel() {
@@ -47,8 +46,10 @@ public class PluginViewModel {
 		afks = new ArrayList<>();
 		loadFiles();
 		StringUtils.PREFIX = message.getString("prefix");
-		timeSchedule = new TimeScheduler(1);
-		scoreboard = new ScoreboardManager();
+		if(config.getBoolean("time-scheduler"))
+			timeSchedule = new TimeScheduler(1);
+		if(config.getBoolean("scoreboard"))
+			scoreboard = new ScoreboardManager();
 
 	}
 
@@ -350,6 +351,18 @@ public class PluginViewModel {
 		float pitch = (float) loc.getDouble("pitch");
 
 		return new Location(world, x + 0.5, y, z + 0.5, yaw, pitch);
+	}
+	
+	public boolean isTimeScheduleActive() {
+		if(timeSchedule == null)
+			return false;
+		return true;
+	}
+	
+	public boolean isScoreboardActive() {
+		if(scoreboard == null)
+			return false;
+		return true;
 	}
 
 	public FileConfiguration getConfig() {

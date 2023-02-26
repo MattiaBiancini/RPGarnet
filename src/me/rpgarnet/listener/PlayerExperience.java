@@ -15,11 +15,14 @@ import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
@@ -161,8 +164,17 @@ public class PlayerExperience implements Listener {
 			Entity entity = e.getEntity();
 			if(isHostile(entity)) {
 				PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
-				data.getStats()[Stats.getIntValue(Stats.DAMAGE)].addExperience(getHostileValue(entity));
-				data.getStats()[Stats.getIntValue(Stats.ATTACK_SPEED)].addExperience(getHostileValue(entity));
+				int damage = (int) e.getFinalDamage();
+				if(entity instanceof LivingEntity) {
+					LivingEntity livingEntity = (LivingEntity) entity;
+					if(damage > livingEntity.getHealth()) {
+						damage = (int) livingEntity.getHealth();
+						if(entity.getCustomName() != null && entity.getCustomName().equalsIgnoreCase(StringUtils.colorFixing("&f" + entity.getName() + " Clone")))
+								damage += getHostileValue(entity);
+					}
+				}
+				data.getStats()[Stats.getIntValue(Stats.DAMAGE)].addExperience(damage);
+				data.getStats()[Stats.getIntValue(Stats.ATTACK_SPEED)].addExperience(damage);
 			}
 
 		}
@@ -186,6 +198,13 @@ public class PlayerExperience implements Listener {
 
 		}
 
+	}
+	
+	@EventHandler
+	public void onMobSpawn(CreatureSpawnEvent e) {
+		if(e.getSpawnReason() == SpawnReason.SPAWNER) {
+			e.getEntity().setCustomName(StringUtils.colorFixing(StringUtils.colorFixing("&f" + e.getEntity().getName() + " Clone")));
+		}
 	}
 
 	@EventHandler
@@ -227,6 +246,8 @@ public class PlayerExperience implements Listener {
 	public void onPlayerSleep(PlayerBedEnterEvent e) {
 		if(!(e.getBedEnterResult() == BedEnterResult.OK))
 			return;
+		if(!RPGarnet.instance.getViewModel().isTimeScheduleActive())
+			return;
 		if(sleeping.contains(e.getPlayer()))
 			return;
 		sleeping.add(e.getPlayer());
@@ -238,6 +259,8 @@ public class PlayerExperience implements Listener {
 
 	@EventHandler
 	public void onPlayerSleep(PlayerBedLeaveEvent e) {
+		if(!RPGarnet.instance.getViewModel().isTimeScheduleActive())
+			return;
 		if(sleeping.contains(e.getPlayer()))
 			sleeping.remove(e.getPlayer());
 
@@ -670,26 +693,14 @@ public class PlayerExperience implements Listener {
 
 	public int getFoodExperience(Material mat) {
 
-		if(mat == Material.ROTTEN_FLESH)
-			return -10;
 		if(mat == Material.SPIDER_EYE)
 			return -20;
-		if(mat == Material.APPLE)
-			return 5;
-		if(mat == Material.COOKED_BEEF)
-			return 30;
-		if(mat == Material.COOKED_CHICKEN)
-			return 25;
-		if(mat == Material.COOKED_COD)
-			return 25;
-		if(mat == Material.COOKED_MUTTON)
-			return 25;
-		if(mat == Material.COOKED_PORKCHOP)
-			return 35;
-		if(mat == Material.COOKED_RABBIT)
-			return 40;
-		if(mat == Material.COOKED_SALMON)
-			return 25;
+		if(mat == Material.POISONOUS_POTATO)
+			return -15;
+		if(mat == Material.PUFFERFISH)
+			return -15;
+		if(mat == Material.ROTTEN_FLESH)
+			return -10;
 		if(mat == Material.BEEF)
 			return -5;
 		if(mat == Material.CHICKEN)
@@ -704,43 +715,59 @@ public class PlayerExperience implements Listener {
 			return -5;
 		if(mat == Material.SALMON)
 			return -5;
-		if(mat == Material.COOKIE)
-			return 5;
-		if(mat == Material.BREAD)
-			return 10;
 		if(mat == Material.POTATO)
 			return -5;
-		if(mat == Material.BAKED_POTATO)
-			return 15;
-		if(mat == Material.CARROT)
-			return 10;
-		if(mat == Material.GOLDEN_APPLE)
-			return 2;
-		if(mat == Material.GOLDEN_CARROT)
-			return 80;
-		if(mat == Material.MUSHROOM_STEW)
-			return 50;
-		if(mat == Material.PUFFERFISH)
-			return -15;
+		if(mat == Material.DRIED_KELP)
+			return -5;
 		if(mat == Material.MELON_SLICE)
 			return 1;
 		if(mat == Material.BEETROOT)
 			return 1;
-		if(mat == Material.BEETROOT_SOUP)
-			return 10;
 		if(mat == Material.CAKE)
 			return 2;
-		if(mat == Material.CHORUS_FRUIT)
-			return (int) ((Math.random() + 1) * 10);
-		if(mat == Material.DRIED_KELP)
-			return -5;
-		if(mat == Material.GLOW_BERRIES)
-			return 20;
 		if(mat == Material.SWEET_BERRIES)
 			return 4;
 		if(mat == Material.TROPICAL_FISH)
 			return 5;
-
+		if(mat == Material.APPLE)
+			return 5;
+		if(mat == Material.COOKIE)
+			return 5;
+		if(mat == Material.GOLDEN_APPLE)
+			return 5;
+		if(mat == Material.PUMPKIN_PIE)
+			return 8;
+		if(mat == Material.BREAD)
+			return 10;
+		if(mat == Material.CARROT)
+			return 10;
+		if(mat == Material.BEETROOT_SOUP)
+			return 10;
+		if(mat == Material.BAKED_POTATO)
+			return 15;
+		if(mat == Material.GLOW_BERRIES)
+			return 20;
+		if(mat == Material.COOKED_SALMON)
+			return 25;
+		if(mat == Material.COOKED_CHICKEN)
+			return 25;
+		if(mat == Material.COOKED_COD)
+			return 25;
+		if(mat == Material.COOKED_MUTTON)
+			return 25;
+		if(mat == Material.COOKED_BEEF)
+			return 30;
+		if(mat == Material.COOKED_PORKCHOP)
+			return 35;
+		if(mat == Material.COOKED_RABBIT)
+			return 40;
+		if(mat == Material.MUSHROOM_STEW)
+			return 50;
+		if(mat == Material.GOLDEN_CARROT)
+			return 80;
+		if(mat == Material.CHORUS_FRUIT)
+			return (int) ((Math.random() + 1) * 10);
+		
 		return 0;
 
 	}

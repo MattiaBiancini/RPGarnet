@@ -43,8 +43,9 @@ public class PlayerListener implements Listener {
 
 		viewModel.addPlayer(data);
 		data.setPlayerAttributes();
-
-		sb.createScoreboard(data);
+		
+		if(viewModel.isScoreboardActive())
+			sb.createScoreboard(data);
 
 		player.sendMessage(HexColor.centeredMessage("&6&l---=[&4&l " + StringUtils.PREFIX + "&6&l]=---"));
 		player.sendMessage(StringUtils.voidMessage());
@@ -61,7 +62,8 @@ public class PlayerListener implements Listener {
 
 		Player player = e.getPlayer();
 		PluginViewModel viewModel = RPGarnet.instance.getViewModel();
-		ScoreboardHandler.removePlayerScoreboard(player);
+		if(viewModel.isScoreboardActive())
+			ScoreboardHandler.removePlayerScoreboard(player);
 		PlayerData data = viewModel.getPlayerData(player);
 		e.setQuitMessage(StringUtils.colorFixing("&8[&c-&8] &7" + player.getName()));
 

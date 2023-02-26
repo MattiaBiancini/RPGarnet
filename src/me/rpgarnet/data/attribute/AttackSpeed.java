@@ -7,7 +7,7 @@ public class AttackSpeed extends Statistic {
 	
 	private static final int BASE_EXP_LEVEL_UP = 500;
 	private static final int MAX_LEVEL = 50;
-	private static final double RATE = 1.2;
+	private static final double RATE = 1.5;
 	private static final double ADDITIVE = 0.5;
 	private static final double BASE = 2.0;
 	
