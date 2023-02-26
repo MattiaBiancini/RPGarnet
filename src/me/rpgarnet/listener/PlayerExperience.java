@@ -251,7 +251,7 @@ public class PlayerExperience implements Listener {
 		if(sleeping.contains(e.getPlayer()))
 			return;
 		sleeping.add(e.getPlayer());
-		if(sleeping.size() * 2 - (Bukkit.getOnlinePlayers().size()) <= 0) {
+		if(sleeping.size() * 2 - (Bukkit.getOnlinePlayers().size()) >= 0) {
 			Bukkit.getWorld("world").setTime(0);
 			Bukkit.getServer().broadcastMessage(StringUtils.yamlString(RPGarnet.instance.getViewModel().getMessage().getString("sleeping-50")));
 		}
