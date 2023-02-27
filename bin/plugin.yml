@@ -3,7 +3,7 @@ author: Garnet14
 main: me.rpgarnet.RPGarnet
 description: RPG implementation for Minecraft
 api-version: 1.19
-version: 0.0.3
+version: 0.0.4
 commands:
    rpg:
       description: Commands to check info
