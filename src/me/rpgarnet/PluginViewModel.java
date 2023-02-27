@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -29,8 +27,6 @@ public class PluginViewModel {
 	private FileConfiguration config;
 	private File messageF;
 	private FileConfiguration message;
-	private File homeF;
-	private FileConfiguration home;
 	private File playerDataFolder;
 
 	private List<PlayerData> data;
@@ -62,7 +58,6 @@ public class PluginViewModel {
 
 		configF = new File(instance.getDataFolder(), "config.yml");
 		messageF = new File(instance.getDataFolder(), "message.yml");
-		homeF = new File(instance.getDataFolder(), "home.yml");
 
 		if(!configF.exists()) {
 			configF.getParentFile().mkdirs();
@@ -74,14 +69,8 @@ public class PluginViewModel {
 			instance.saveResource("message.yml", false);
 		}
 
-		if(!homeF.exists()) {
-			homeF.getParentFile().mkdirs();
-			instance.saveResource("home.yml", false);
-		}
-
 		config = YamlConfiguration.loadConfiguration(configF);
 		message = YamlConfiguration.loadConfiguration(messageF);
-		home = YamlConfiguration.loadConfiguration(homeF);
 
 	}
 
@@ -215,6 +204,12 @@ public class PluginViewModel {
 		return data;
 
 	}
+	
+	public PlayerData loadOfflinePlayerData(OfflinePlayer player) {
+
+		return loadPlayerData(Bukkit.getPlayerExact(player.getName()));
+
+	}
 
 	/**
 	 * Saves all PlayerData in player.yml file.
@@ -322,36 +317,6 @@ public class PluginViewModel {
 	public boolean isAfk(Player player) {
 		return afks.contains(player);
 	}
-
-	public void addHome(Player player, Location location) {
-
-		home.set(player.getName() + ".world", location.getWorld().getName());
-		home.set(player.getName() + ".X", location.getBlockX());
-		home.set(player.getName() + ".Y", location.getBlockY());
-		home.set(player.getName() + ".Z", location.getBlockZ());
-		home.set(player.getName() + ".yaw", location.getYaw());
-		home.set(player.getName() + ".pitch", location.getPitch());
-		try {
-			home.save(homeF);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public Location getHome(Player player) {
-		if(home.getConfigurationSection(player.getName()) == null)
-			return null;
-		ConfigurationSection loc = home.getConfigurationSection(player.getName());
-		World world = Bukkit.getWorld(loc.getString("world"));
-		int x = loc.getInt("X");
-		int y = loc.getInt("Y");
-		int z = loc.getInt("Z");
-		float yaw = (float) loc.getDouble("yaw");
-		float pitch = (float) loc.getDouble("pitch");
-
-		return new Location(world, x + 0.5, y, z + 0.5, yaw, pitch);
-	}
 	
 	public boolean isTimeScheduleActive() {
 		if(timeSchedule == null)
@@ -371,22 +336,15 @@ public class PluginViewModel {
 	public FileConfiguration getMessage() {
 		return message;
 	}
-	public FileConfiguration getHome() {
-		return home;
-	}
-
 	public TimeScheduler getTimeSchedule() {
 		return timeSchedule;
 	}
-
 	public ScoreboardManager getScoreboard() {
 		return scoreboard;
 	}
-
 	public List<Player> getAfks() {
 		return afks;
 	}
-
 	public List<PlayerData> getData() {
 		return data;
 	}
