@@ -14,6 +14,7 @@ There are 8 different statistic that can be improved during the normal gameplay:
 
 ## Summary other content:
 - [Custom Item](https://github.com/MattiaBiancini/RPGarnet/readme.md "Custom Item")
+- [Game Mechanics](https://github.com/MattiaBiancini/RPGarnet/readme.md "Game Mechanics")
 - [Table Chart](https://github.com/MattiaBiancini/RPGarnet/readme.md "Table Chart")
 
 *Note: In case a player dies, all experience accumulated for each statistic is reset or, if the experience was already 0, the statistic is reduced by 1 level.*
@@ -132,10 +133,10 @@ This item allows you to upgrade every gear to his next level
 # Game Mechanics
 
 ## Cobblestone Generator
-The *cobblestone generator* will generate *Deepslate* and *Cobble Deepslate* when is below y = 0.
+The **cobblestone generator** will generate **Deepslate** and **Cobble Deepslate** when is below y = 0.
 
 ## Ender Dragon
-*Ender Dragon* will drop *Dragon Egg* each time it dies.
+**Ender Dragon** will drop **Dragon Egg** each time it dies.
 
 ## Smithing Plus Mechanic
 This is the gui of the smithing plus. It allows you to upgrade you gear moving enchant from one level to the other. Once you allow the craft you will get the gear upgraded with the enchant and the old one without it.
@@ -143,14 +144,14 @@ This is the gui of the smithing plus. It allows you to upgrade you gear moving e
 ![](https://imgur.com/Wy5VFdp.png)
 
 The slots are:
-- *Ingredient 1*: Yellow Glass Pane
-- *Ingredient 2*: Yellow Glass Pane
-- *Result*: Lime Glass Pane
-- *Confirm Crafting*: Lime Terracotta
-- *Cancel Crafting*: Red Terracotta
-- *Destroy Table*: Barrier (_Gives you back the egg_)
+- **Ingredient 1**: Yellow Glass Pane
+- **Ingredient 2**: Yellow Glass Pane
+- **Result**: Lime Glass Pane
+- **Confirm Crafting**: Lime Terracotta
+- **Cancel Crafting**: Red Terracotta
+- **Destroy Table**: Barrier (_Gives you back the egg_)
 
-To use you have to click your *gear* (armor, tool or weapon) that is *not* made by netherite or diamond. Then select the same item of the next level.
+To use you have to click your **gear** (armor, tool or weapon) that is **not** made by netherite or diamond. Then select the same item of the next level.
 
 | Gear Level | Next Level |
 | ------------ | ------------ |
