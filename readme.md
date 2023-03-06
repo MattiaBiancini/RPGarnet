@@ -13,9 +13,9 @@ There are 8 different statistic that can be improved during the normal gameplay:
 - [Movement Speed](https://github.com/MattiaBiancini/RPGarnet#Movement-Speed)
 
 ## Summary other content:
-- [Custom Item](https://github.com/MattiaBiancini/RPGarnet#Custom-Item")
-- [Game Mechanics](https://github.com/MattiaBiancini/RPGarnet#Game-Mechanics")
-- [Table Chart](https://github.com/MattiaBiancini/RPGarnet#Table-Chart")
+- [Custom Item](https://github.com/MattiaBiancini/RPGarnet#Custom-Item)
+- [Game Mechanics](https://github.com/MattiaBiancini/RPGarnet#Game-Mechanics)
+- [Table Chart](https://github.com/MattiaBiancini/RPGarnet#Table-Chart)
 
 *Note: In case a player dies, all experience accumulated for each statistic is reset or, if the experience was already 0, the statistic is reduced by 1 level.*
 
