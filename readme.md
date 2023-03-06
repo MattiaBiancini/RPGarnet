@@ -4,18 +4,18 @@ Version 1.0.0
 
 There are 8 different statistic that can be improved during the normal gameplay:
 - [Armor](https://github.com/MattiaBiancini/RPGarnet#Armor)
-- [Attack Speed](https://github.com/MattiaBiancini/RPGarnet/readme.md "Attack Speed")
-- [Damage](https://github.com/MattiaBiancini/RPGarnet/readme.md "Damage")
-- [Evasion](https://github.com/MattiaBiancini/RPGarnet/readme.md "Evasion")
-- [Health](https://github.com/MattiaBiancini/RPGarnet/readme.md "Health")
-- [Knockback Resistance](https://github.com/MattiaBiancini/RPGarnet/readme.md "Knockback Resistance")
-- [Luck](https://github.com/MattiaBiancini/RPGarnet/readme.md "Luck")
-- [Movement Speed](https://github.com/MattiaBiancini/RPGarnet/readme.md "Movement Speed")
+- [Attack Speed](https://github.com/MattiaBiancini/RPGarnet#Attack-Speed)
+- [Damage](https://github.com/MattiaBiancini/RPGarnet#Damage)
+- [Evasion](https://github.com/MattiaBiancini/RPGarnet#Evasion)
+- [Health](https://github.com/MattiaBiancini/RPGarnet#Health)
+- [Knockback Resistance](https://github.com/MattiaBiancini/RPGarnet#Knockback-Resistance)
+- [Luck](https://github.com/MattiaBiancini/RPGarnet#Luck)
+- [Movement Speed](https://github.com/MattiaBiancini/RPGarnet#Movement-Speed)
 
 ## Summary other content:
-- [Custom Item](https://github.com/MattiaBiancini/RPGarnet/readme.md "Custom Item")
-- [Game Mechanics](https://github.com/MattiaBiancini/RPGarnet/readme.md "Game Mechanics")
-- [Table Chart](https://github.com/MattiaBiancini/RPGarnet/readme.md "Table Chart")
+- [Custom Item](https://github.com/MattiaBiancini/RPGarnet#Custom-Item")
+- [Game Mechanics](https://github.com/MattiaBiancini/RPGarnet#Game-Mechanics")
+- [Table Chart](https://github.com/MattiaBiancini/RPGarnet#Table-Chart")
 
 *Note: In case a player dies, all experience accumulated for each statistic is reset or, if the experience was already 0, the statistic is reduced by 1 level.*
 
