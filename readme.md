@@ -3,7 +3,7 @@ RPG plugin for Spigot 1.19.3
 Version 1.0.0
 
 There are 8 different statistic that can be improved during the normal gameplay:
-- [Armor](https://github.com/MattiaBiancini/RPGarnet/readme.md "Armor")
+- [Armor](https://github.com/MattiaBiancini/RPGarnet#Armor)
 - [Attack Speed](https://github.com/MattiaBiancini/RPGarnet/readme.md "Attack Speed")
 - [Damage](https://github.com/MattiaBiancini/RPGarnet/readme.md "Damage")
 - [Evasion](https://github.com/MattiaBiancini/RPGarnet/readme.md "Evasion")
