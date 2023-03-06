@@ -1,14 +1,20 @@
 # RPGarnet
 RPG plugin for Spigot 1.19.3
+Version 1.0.0
 
-There are 7 different statistic that can be improved during the normal gameplay:
+There are 8 different statistic that can be improved during the normal gameplay:
 - [Armor](https://github.com/MattiaBiancini/RPGarnet/readme.md "Armor")
 - [Attack Speed](https://github.com/MattiaBiancini/RPGarnet/readme.md "Attack Speed")
 - [Damage](https://github.com/MattiaBiancini/RPGarnet/readme.md "Damage")
+- [Evasion](https://github.com/MattiaBiancini/RPGarnet/readme.md "Evasion")
 - [Health](https://github.com/MattiaBiancini/RPGarnet/readme.md "Health")
 - [Knockback Resistance](https://github.com/MattiaBiancini/RPGarnet/readme.md "Knockback Resistance")
 - [Luck](https://github.com/MattiaBiancini/RPGarnet/readme.md "Luck")
 - [Movement Speed](https://github.com/MattiaBiancini/RPGarnet/readme.md "Movement Speed")
+
+## Summary other content:
+- [Custom Item](https://github.com/MattiaBiancini/RPGarnet/readme.md "Custom Item")
+- [Table Chart](https://github.com/MattiaBiancini/RPGarnet/readme.md "Table Chart")
 
 *Note: In case a player dies, all experience accumulated for each statistic is reset or, if the experience was already 0, the statistic is reduced by 1 level.*
 
@@ -41,8 +47,19 @@ You gain **1 experience point** for every **half-heart of damage you deal to hos
 | Base | 1 |
 | Additive | 1.5 |
 | Max Level | 100 |
+
+## Evasion
+This statistic modifies the player's **dodging ability**. When an hostile mob deal damage to you, you have a probability divided by the damade dealt to dodge that damage. The max value of this statistic is 15%
+
+You gain **1 experience point** for every **half-heart of damage you dodge from hostile mobs**.
+| Evasion Info | Values |
+| ------------ | ------------ |
+| Base | 1% |
+| Additive | 0.5% |
+| Max Level | 30 |
+
 ## Health
-This statistic modifies the player's base **HP**. Compared to the original value, this statistic has been halved at the beginning and then reaches the same value at level 10. 
+This statistic modifies the player's base **HP**. Compared to the original value, this statistic has been halved at the beginning and then reaches the same value at level 10.
 
 You gain **1 experience point** for every **half-heart of damage you would take**, regardless of which hostile mob attacked you. 
 | Health Info | Values |
@@ -50,6 +67,7 @@ You gain **1 experience point** for every **half-heart of damage you would take*
 | Base | 10 |
 | Additive | 1 |
 | Max Level | 50 |
+
 ## Knockback Resistance
 This statistic modifies how much **knockback you take from attacks** of any type. Usually, you can only obtain this statistic with diamond or netherite armor. Armor modifications will still work and will be added to your base knockback resistance.
 
@@ -59,6 +77,7 @@ You gain **1 experience point** for every **half-heart of true damage you take**
 | Base | 0 |
 | Additive | 0.05 |
 | Max Level | 20 |
+
 ## Luck
 This statistic modifies the player's **luck**. This means that when the game generates loot for a dungeon chest, it will be more favorable towards you. Additionally, **every 10 levels of Luck**, you will receive an extra drop in addition to the classic drop influenced by the Fortune or Looting enchantment.
 
@@ -73,6 +92,7 @@ You can **gain experience** for this statistic in various ways:
 | Base | 0 |
 | Additive | 0.5 |
 | Max Level | 100 |
+
 ## Movement Speed
 This statistic modifies the player's **movement speed**. At level 0, the value of this statistic is lower than the game's base value by about 2/3. To regain the base value, you need to reach level 5.
 
@@ -83,6 +103,64 @@ To **gain experience points**, you need to eat.
 | Base | 0.075 |
 | Additive | 0.005 |
 | Max Level | 32 |
+
+# Custom Item
+## Totem of Protection
+This item when is in your inventory or in your chest, prevent you from losing statistic upon death.
+
+| Totem of Protection | Info |
+| ------------ | ------------ |
+| Obtainable | Killing Warden (drop x1) |
+| Max Stack Size | 1 |
+
+## Spawner Transporter
+This item allows you to move spawner in the world.
+
+| Spawner Transporter | Info |
+| ------------ | ------------ |
+| Obtainable | ![](https://imgur.com/szeATLx.png) |
+| Max Stack Size | 1 |
+
+## Enchanted Smithing Table
+This item allows you to upgrade every gear to his next level
+
+| Smithing Plus Egg | Info |
+| ------------ | ------------ |
+| Obtainable | ![](https://imgur.com/49OoGWA.png) |
+| Max Stack Size | 64 |
+
+# Game Mechanics
+
+## Cobblestone Generator
+The *cobblestone generator* will generate *Deepslate* and *Cobble Deepslate* when is below y = 0.
+
+## Ender Dragon
+*Ender Dragon* will drop *Dragon Egg* each time it dies.
+
+## Smithing Plus Mechanic
+This is the gui of the smithing plus. It allows you to upgrade you gear moving enchant from one level to the other. Once you allow the craft you will get the gear upgraded with the enchant and the old one without it.
+
+![](https://imgur.com/Wy5VFdp.png)
+
+The slots are:
+- *Ingredient 1*: Yellow Glass Pane
+- *Ingredient 2*: Yellow Glass Pane
+- *Result*: Lime Glass Pane
+- *Confirm Crafting*: Lime Terracotta
+- *Cancel Crafting*: Red Terracotta
+- *Destroy Table*: Barrier (_Gives you back the egg_)
+
+To use you have to click your *gear* (armor, tool or weapon) that is *not* made by netherite or diamond. Then select the same item of the next level.
+
+| Gear Level | Next Level |
+| ------------ | ------------ |
+| Wood | Stone |
+| Leather | Gold |
+| Chainmail | Gold |
+| Stone | Gold |
+| Stone | Iron |
+| Gold | Iron |
+| Iron | Diamond |
 
 ## Table Chart
 ### Attack Speed & Damage
