@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.rpgarnet.data.PlayerData;
-import me.rpgarnet.data.attribute.Statistic;
+import me.rpgarnet.data.attribute.CustomStatistic;
 import me.rpgarnet.data.attribute.Stats;
 import me.rpgarnet.event.time.TimeScheduler;
 import me.rpgarnet.scoreboard.ScoreboardManager;
@@ -41,6 +41,7 @@ public class PluginViewModel {
 		data = new ArrayList<>();
 		afks = new ArrayList<>();
 		loadFiles();
+		checkUpdates();
 		StringUtils.PREFIX = message.getString("prefix");
 		if(config.getBoolean("time-scheduler"))
 			timeSchedule = new TimeScheduler(1);
@@ -72,6 +73,43 @@ public class PluginViewModel {
 		config = YamlConfiguration.loadConfiguration(configF);
 		message = YamlConfiguration.loadConfiguration(messageF);
 
+	}
+	
+	private void checkUpdates() {
+		
+		if(config.getString("version") == null || !config.getString("version").equalsIgnoreCase("1.0.0") ) {
+			config.set("version", RPGarnet.instance.getDescription().getVersion());
+			try {
+				config.save(configF);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			message.addDefault("dodge", "&7You dodged the attack, good job!");
+			
+			try {
+				message.save(messageF);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			for(PlayerData playerData : data) {
+				File playerFile = new File(playerDataFolder, playerData.getPlayer().getName() + ".yml");
+	            FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
+
+	                playerConfig.set("stats.evasion.level", 0);
+	                playerConfig.set("stats.evasion.experience", 0);
+	                
+	            try {
+	                playerConfig.save(playerFile);
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
+			}
+
+			
+		}
+		
 	}
 
 	/**
@@ -163,7 +201,7 @@ public class PluginViewModel {
 	    FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
 		
 		
-		Statistic[] stats = new Statistic[PlayerData.STATS_NUMBER];
+		CustomStatistic[] stats = new CustomStatistic[PlayerData.STATS_NUMBER];
 		for(int i = 0; i < PlayerData.STATS_NUMBER; i++) {
 			stats[i] = Stats.getStatistic(Stats.getStats(i), player, 
 					playerConfig.getInt("stats." + Stats.getStats(i).toString().toLowerCase() + ".experience"), 
@@ -193,7 +231,7 @@ public class PluginViewModel {
 	    FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
 		
 		
-		Statistic[] stats = new Statistic[PlayerData.STATS_NUMBER];
+	    CustomStatistic[] stats = new CustomStatistic[PlayerData.STATS_NUMBER];
 		for(int i = 0; i < PlayerData.STATS_NUMBER; i++) {
 			stats[i] = Stats.getStatistic(Stats.getStats(i), player, 
 					playerConfig.getInt("stats." + Stats.getStats(i).toString().toLowerCase() + ".experience"), 

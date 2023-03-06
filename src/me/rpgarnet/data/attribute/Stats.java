@@ -9,6 +9,7 @@ public enum Stats {
 	ARMOR,
 	ATTACK_SPEED,
 	DAMAGE,
+	EVASION,
 	HEALTH,
 	KNOCKBACK_RESISTANCE,
 	LUCK,
@@ -22,14 +23,16 @@ public enum Stats {
 				return 1;
 			case DAMAGE:
 				return 2;
-			case HEALTH:
+			case EVASION:
 				return 3;
-			case KNOCKBACK_RESISTANCE:
+			case HEALTH:
 				return 4;
-			case LUCK:
+			case KNOCKBACK_RESISTANCE:
 				return 5;
-			case MOVEMENT_SPEED:
+			case LUCK:
 				return 6;
+			case MOVEMENT_SPEED:
+				return 7;
 		}
 		return -1;
 	}
@@ -42,14 +45,16 @@ public enum Stats {
 				return 1;
 			case DAMAGE:
 				return 2;
-			case HEALTH:
+			case EVASION:
 				return 3;
-			case KNOCKBACK_RESISTANCE:
+			case HEALTH:
 				return 4;
-			case LUCK:
+			case KNOCKBACK_RESISTANCE:
 				return 5;
-			case MOVEMENT_SPEED:
+			case LUCK:
 				return 6;
+			case MOVEMENT_SPEED:
+				return 7;
 		}
 		return -1;
 	}
@@ -63,12 +68,14 @@ public enum Stats {
 	        case 2:
 	            return Stats.DAMAGE;
 	        case 3:
-	            return Stats.HEALTH;
+	        	return Stats.EVASION;
 	        case 4:
-	            return Stats.KNOCKBACK_RESISTANCE;
+	            return Stats.HEALTH;
 	        case 5:
-	            return Stats.LUCK;
+	            return Stats.KNOCKBACK_RESISTANCE;
 	        case 6:
+	            return Stats.LUCK;
+	        case 7:
 	            return Stats.MOVEMENT_SPEED;
 	        default:
 	            return null;
@@ -85,6 +92,8 @@ public enum Stats {
 	            return Stats.ATTACK_SPEED;
 	        case "DAMAGE":
 	            return Stats.DAMAGE;
+	        case "EVASION":
+	        	return Stats.EVASION;
 	        case "HEALTH":
 	            return Stats.HEALTH;
 	        case "RESISTANCE":
@@ -101,7 +110,7 @@ public enum Stats {
 		
 	}
 	
-	public static Statistic getStatistic(Stats stat, Player player) {
+	public static CustomStatistic getStatistic(Stats stat, Player player) {
 		switch(stat) {
 			case ARMOR:
 				return new Armor(player, Attribute.GENERIC_ARMOR);
@@ -109,6 +118,8 @@ public enum Stats {
 				return new AttackSpeed(player, Attribute.GENERIC_ATTACK_SPEED);
 			case DAMAGE:
 				return new Damage(player, Attribute.GENERIC_ATTACK_DAMAGE);
+			case EVASION:
+				return new Evasion(player, "Evasion");
 			case HEALTH:
 				return new Health(player, Attribute.GENERIC_MAX_HEALTH);
 			case KNOCKBACK_RESISTANCE:
@@ -121,7 +132,7 @@ public enum Stats {
 		return null;
 	}
 	
-	public static Statistic getStatistic(Stats stat, Player player, int experience, int level) {
+	public static CustomStatistic getStatistic(Stats stat, Player player, int experience, int level) {
 		switch(stat) {
 			case ARMOR:
 				return new Armor(player, Attribute.GENERIC_ARMOR, experience, level);
@@ -129,6 +140,8 @@ public enum Stats {
 				return new AttackSpeed(player, Attribute.GENERIC_ATTACK_SPEED, experience, level);
 			case DAMAGE:
 				return new Damage(player, Attribute.GENERIC_ATTACK_DAMAGE, experience, level);
+			case EVASION:
+				return new Evasion(player, "Evasion", experience, level);
 			case HEALTH:
 				return new Health(player, Attribute.GENERIC_MAX_HEALTH, experience, level);
 			case KNOCKBACK_RESISTANCE:
@@ -164,6 +177,8 @@ public enum Stats {
 				return "✦";
 			case DAMAGE:
 				return "☄";
+			case EVASION:
+				return "※";
 			case HEALTH:
 				return "❤";
 			case KNOCKBACK_RESISTANCE:

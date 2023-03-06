@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.enchantments.Enchantment;
@@ -38,8 +39,9 @@ import org.bukkit.inventory.ItemStack;
 import me.rpgarnet.PluginViewModel;
 import me.rpgarnet.RPGarnet;
 import me.rpgarnet.data.PlayerData;
-import me.rpgarnet.data.attribute.Statistic;
+import me.rpgarnet.data.attribute.CustomStatistic;
 import me.rpgarnet.data.attribute.Stats;
+import me.rpgarnet.recipe.item.TotemOfProtection;
 import me.rpgarnet.utils.StringUtils;
 
 public class PlayerExperience implements Listener {
@@ -150,6 +152,12 @@ public class PlayerExperience implements Listener {
 
 	@EventHandler
 	public void onDealDamage(EntityDamageByEntityEvent e) {
+		
+		if(e.getDamager() == null)
+			return;
+		
+		if(e.getEntity() == null)
+			return;
 
 		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player)
 			return;
@@ -186,9 +194,17 @@ public class PlayerExperience implements Listener {
 			else
 				player = (Player) ((AbstractArrow) e.getEntity()).getShooter();
 			Entity entity = e.getDamager();
-
+			
 			if(isHostile(entity)) {
 				PlayerData data = RPGarnet.instance.getViewModel().getPlayerData(player);
+				
+				if((Math.random() / e.getDamage()) <= data.getStats()[Stats.getIntValue(Stats.EVASION)].getAttributeValue()) {
+					data.getStats()[Stats.getIntValue(Stats.EVASION)].addExperience((int) e.getDamage());
+					player.sendMessage(StringUtils.yamlString(RPGarnet.instance.getViewModel().getMessage().getString("dodge")));
+					e.setCancelled(true);
+					return;
+				}
+				
 				int health = (int) e.getDamage();
 				int armor = (int) e.getFinalDamage();
 				data.getStats()[Stats.getIntValue(Stats.HEALTH)].addExperience(health);
@@ -203,19 +219,54 @@ public class PlayerExperience implements Listener {
 	@EventHandler
 	public void onMobSpawn(CreatureSpawnEvent e) {
 		if(e.getSpawnReason() == SpawnReason.SPAWNER) {
-			e.getEntity().setCustomName(StringUtils.colorFixing(StringUtils.colorFixing("&f" + e.getEntity().getName() + " Clone")));
+			e.getEntity().setCustomName(StringUtils.colorFixing("&f" + e.getEntity().getName() + " Clone"));
+			e.getEntity().setCustomNameVisible(false);
 		}
 	}
 
 	@EventHandler
 	public void onPlayerDie(PlayerDeathEvent e) {
 		Player player = e.getEntity();
+		
+		if(e.getKeepInventory()) {
+			for(int i = 0; i < player.getInventory().getSize(); i++) {
+				ItemStack item = player.getInventory().getItem(i);
+				if(item.getType() == TotemOfProtection.totem.getType()) {
+					if(item.hasItemMeta() && item.getItemMeta().getDisplayName().equalsIgnoreCase(TotemOfProtection.totem.getItemMeta().getDisplayName())) {
+						player.getInventory().setItem(i, new ItemStack(Material.AIR));
+						return;
+					}
+				}
+			}
+		}
+		else {
+			for(int i = 0; i < e.getDrops().size(); i++) {
+				ItemStack item = e.getDrops().get(i);
+				if(item.getType() == TotemOfProtection.totem.getType()) {
+					if(item.hasItemMeta() && item.getItemMeta().getDisplayName().equalsIgnoreCase(TotemOfProtection.totem.getItemMeta().getDisplayName())) {
+						e.getDrops().remove(i);
+						return;
+					}
+				}
+			}
+		}
+		
+		for(int i =0; i < player.getEnderChest().getSize(); i++) {
+			ItemStack item = player.getEnderChest().getItem(i);
+			if(item.getType() == TotemOfProtection.totem.getType()) {
+				if(item.hasItemMeta() && item.getItemMeta().getDisplayName().equalsIgnoreCase(TotemOfProtection.totem.getItemMeta().getDisplayName())) {
+					player.getEnderChest().setItem(i, new ItemStack(Material.AIR));
+					return;
+				}
+			}
+		}
+		
 		PluginViewModel viewModel = RPGarnet.instance.getViewModel();
 		PlayerData data = viewModel.getPlayerData(player);
-		for(Statistic stat : data.getStats()) {
+		for(CustomStatistic stat : data.getStats()) {
 			stat.deathReset();
 		}
-		player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("death-message"), data));
+		player.sendMessage(StringUtils.yamlString(viewModel.getMessage().getString("death"), data));
 	}
 
 	@EventHandler
@@ -254,6 +305,9 @@ public class PlayerExperience implements Listener {
 		if(sleeping.size() * 2 - (Bukkit.getOnlinePlayers().size()) >= 0) {
 			Bukkit.getWorld("world").setTime(0);
 			Bukkit.getServer().broadcastMessage(StringUtils.yamlString(RPGarnet.instance.getViewModel().getMessage().getString("sleeping-50")));
+			for(Player player : sleeping) {
+				player.setStatistic(Statistic.TIME_SINCE_REST, 0);
+			}
 		}
 	}
 
@@ -685,6 +739,8 @@ public class PlayerExperience implements Listener {
 		if(mat == Material.SWEET_BERRIES)
 			return true;
 		if(mat == Material.TROPICAL_FISH)
+			return true;
+		if(mat == Material.PUMPKIN_PIE)
 			return true;
 
 		return false;

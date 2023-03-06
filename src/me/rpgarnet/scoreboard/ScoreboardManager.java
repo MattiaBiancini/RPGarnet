@@ -8,7 +8,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import me.rpgarnet.PluginViewModel;
@@ -34,23 +33,8 @@ public class ScoreboardManager {
 
         ScoreboardHandler.addPlayerScoreboard(player, scoreboard);
 
-        Score blankLine = objective.getScore("§0");
-        blankLine.setScore(15);
+        setNewScoreboard(data, scoreboard, objective);
         
-        for(Stats s : Stats.values()) {
-        	if(scoreboard.getTeam(s.getStatsName()) == null)
-        		scoreboard.registerNewTeam(s.getStatsName());
-        	if(scoreboard.getTeam("§" + Stats.getIntValue(s)) == null)
-        		scoreboard.registerNewTeam("§" + Stats.getIntValue(s));
-        	scoreboard.getTeam(s.getStatsName()).addEntry(s.getStatsName());
-        	scoreboard.getTeam(s.getStatsName()).setPrefix("§6§l" + s.getIcon() + "§6 ");
-        	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§6" + DF.format(data.getStats()[Stats.getIntValue(s)].getAttributeValue()));
-        	objective.getScore(s.getStatsName()).setScore(14 - 2 * Stats.getIntValue(s));
-        	scoreboard.getTeam("§" + Stats.getIntValue(s)).addEntry("§" + Stats.getIntValue(s));
-        	scoreboard.getTeam("§" + Stats.getIntValue(s)).setSuffix(StringUtils.percentageExp(data, Stats.getIntValue(s)));
-        	objective.getScore("§" + Stats.getIntValue(s)).setScore(14 - 2 * Stats.getIntValue(s) - 1);
-        }       
-
         player.setScoreboard(scoreboard);
         ScoreboardHandler.addPlayerScoreboard(player, scoreboard);
         
@@ -68,20 +52,8 @@ public class ScoreboardManager {
             if(scoreboard == null) {
             	createScoreboard(data);
             }
-            boolean choice = (Math.random() > 0.5);
 
-            for(Stats s : Stats.values()) {
-            	if(scoreboard.getTeam(s.getStatsName()) == null)
-            		scoreboard.registerNewTeam(s.getStatsName());
-            	scoreboard.getTeam(s.getStatsName()).setPrefix("§6§l" + s.getIcon() + "§6 ");
-            	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§6" + DF.format(data.getStats()[Stats.getIntValue(s)].getAttributeValue()));
-            	if(choice)
-            		scoreboard.getTeam("§" + Stats.getIntValue(s)).setSuffix(StringUtils.percentageExp(data, Stats.getIntValue(s)));
-            	else {
-            		scoreboard.getTeam("§" + Stats.getIntValue(s)).setSuffix(StringUtils.colorFixing("&fExperience: &e" + 
-            	        	data.getStats()[Stats.getIntValue(s)].getExperience() + "&f/&6" + data.getStats()[Stats.getIntValue(s)].getExpToLevel()));
-            	}
-            }
+            updateScoreboard(data, scoreboard);
         }
     }
 
@@ -95,6 +67,33 @@ public class ScoreboardManager {
             }
 
         }.runTaskTimer(RPGarnet.instance, 0L, 100L);
+    }
+    
+    private void setNewScoreboard(PlayerData data, Scoreboard scoreboard, Objective objective) {
+    	
+    	for(Stats s : Stats.values()) {
+    		setEntry(data, scoreboard, s);
+        	objective.getScore(s.getStatsName()).setScore(14 - Stats.getIntValue(s));
+        }
+    	
+    }
+    
+    private void updateScoreboard(PlayerData data, Scoreboard scoreboard) {
+    	
+    	for(Stats s : Stats.values()) {
+    		setEntry(data, scoreboard, s);
+        }
+    	
+    }
+    
+    private void setEntry(PlayerData data, Scoreboard scoreboard, Stats s) {
+    	
+    	if(scoreboard.getTeam(s.getStatsName()) == null)
+    		scoreboard.registerNewTeam(s.getStatsName());
+    	scoreboard.getTeam(s.getStatsName()).addEntry(s.getStatsName());
+    	scoreboard.getTeam(s.getStatsName()).setPrefix("§6§l" + s.getIcon() + "§6 ");
+    	scoreboard.getTeam(s.getStatsName()).setSuffix("§e: " + "§6" + DF.format(data.getStats()[Stats.getIntValue(s)].getAttributeValue()));
+    	
     }
 
 }

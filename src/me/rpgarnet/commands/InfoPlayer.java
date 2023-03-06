@@ -19,7 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.rpgarnet.PluginViewModel;
 import me.rpgarnet.RPGarnet;
 import me.rpgarnet.data.PlayerData;
-import me.rpgarnet.data.attribute.Statistic;
+import me.rpgarnet.data.attribute.CustomStatistic;
 import me.rpgarnet.data.attribute.Stats;
 import me.rpgarnet.utils.HexColor;
 import me.rpgarnet.utils.StringUtils;
@@ -127,7 +127,7 @@ public class InfoPlayer implements CommandExecutor, TabCompleter {
 		}
 		
 		for(int i = 0; i < data.getStats().length; i++) {
-			Statistic statistic = data.getStats()[i];
+			CustomStatistic statistic = data.getStats()[i];
 			ItemStack attribute = new ItemStack(getStatisticItem(i));
 			ItemMeta attributeM = attribute.getItemMeta();
 			attributeM.setDisplayName(StringUtils.colorFixing("&4" + Stats.getStats(i).getStatsName()));
@@ -138,7 +138,7 @@ public class InfoPlayer implements CommandExecutor, TabCompleter {
 			lore.add(StringUtils.colorFixing("&7Experience&8» &e" + statistic.getExperience() + "&7/&6" + statistic.getExpToLevel()));
 			lore.add(StringUtils.colorFixing("&7Value&8» &6" + statistic.getAttributeValue()));
 			lore.add(StringUtils.colorFixing("&7"));
-			for(String string : Statistic.getDescription(statistic))
+			for(String string : CustomStatistic.getDescription(statistic))
 				lore.add(string);
 			attributeM.setLore(lore);
 			attribute.setItemMeta(attributeM);
@@ -159,32 +159,36 @@ public class InfoPlayer implements CommandExecutor, TabCompleter {
 			case 3:
 				return 16;
 			case 4:
-				return 29;
+				return 28;
 			case 5:
-				return 31;
+				return 30;
 			case 6:
-				return 33;
+				return 32;
+			case 7:
+				return 34;
 		}
 		return 0;
 	}
 	
 	private Material getStatisticItem(int i) {
 		switch(i) {
-		case 0:
-			return Material.DIAMOND;
-		case 1:
-			return Material.REDSTONE;
-		case 2:
-			return Material.BLAZE_POWDER;
-		case 3:
-			return Material.GHAST_TEAR;
-		case 4:
-			return Material.NETHERITE_INGOT;
-		case 5:
-			return Material.LAPIS_LAZULI;
-		case 6:
-			return Material.FEATHER;
-	}
+			case 0:
+				return Material.DIAMOND;
+			case 1:
+				return Material.REDSTONE;
+			case 2:
+				return Material.BLAZE_POWDER;
+			case 3:
+				return Material.PHANTOM_MEMBRANE;
+			case 4:
+				return Material.GHAST_TEAR;
+			case 5:
+				return Material.NETHERITE_INGOT;
+			case 6:
+				return Material.LAPIS_LAZULI;
+			case 7:
+				return Material.FEATHER;
+		}
 	return Material.AIR;
 	}
 

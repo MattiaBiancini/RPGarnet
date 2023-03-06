@@ -6,18 +6,18 @@ import me.rpgarnet.data.attribute.*;
 
 public class PlayerData {
 
-	public static final int STATS_NUMBER = 7;
+	public static final int STATS_NUMBER = 8;
 	
-	private Statistic[] stats;	
+	private CustomStatistic[] stats;	
 	private Player player;
 
-	public PlayerData(Player player, Statistic[] stats) {
+	public PlayerData(Player player, CustomStatistic[] stats) {
 		this.player = player;
 		this.stats = stats;	
 		setPlayerAttributes();
 	}
 
-	public PlayerData(Player player, Armor armor, AttackSpeed attackSpeed, Damage damage, Health health, 
+	public PlayerData(Player player, Armor armor, AttackSpeed attackSpeed, Damage damage, Evasion evasion, Health health, 
 			KnockbackResistance knockbackResistence, Luck luck, MovementSpeed movementSpeed) {
 		
 		this.player = player;
@@ -26,10 +26,11 @@ public class PlayerData {
 		stats[0] = armor;
 		stats[1] = attackSpeed;
 		stats[2] = damage;
-		stats[3] = health;
-		stats[4] = knockbackResistence;
-		stats[5] = luck;
-		stats[6] = movementSpeed;
+		stats[3] = evasion;
+		stats[4] = health;
+		stats[5] = knockbackResistence;
+		stats[6] = luck;
+		stats[7] = movementSpeed;
 		
 		setPlayerAttributes();
 	}
@@ -37,7 +38,7 @@ public class PlayerData {
 	public PlayerData(Player player) {
 		this.player = player;
 		
-		this.stats = new Statistic[STATS_NUMBER];
+		this.stats = new CustomStatistic[STATS_NUMBER];
 		for(int i = 0; i < stats.length; i++)
 			stats[i] = Stats.getStatistic(Stats.getStats(i), player);
 		
@@ -71,20 +72,21 @@ public class PlayerData {
 	
 	public void setPlayerAttributes() {
 		for(int i = 0; i < stats.length; i++)
-			player.getAttribute(stats[i].getAttribute()).setBaseValue(
-					Statistic.calculateAttributeLevel(
-							stats[i].getLevel(), stats[i].getBaseAttribute(), stats[i].getAdditivePerLevel()));
+			if(stats[i] instanceof Statistic)
+				player.getAttribute(((Statistic)stats[i]).getAttribute()).setBaseValue(
+						Statistic.calculateAttributeLevel(
+								stats[i].getLevel(), stats[i].getBaseAttribute(), stats[i].getAdditivePerLevel()));
 	}
 	
 	public Player getPlayer() {
 		return player;
 	}
 
-	public Statistic[] getStats() {
+	public CustomStatistic[] getStats() {
 		return stats;
 	}
 
-	public void setStats(Statistic[] stats) {
+	public void setStats(CustomStatistic[] stats) {
 		this.stats = stats;
 	}
 

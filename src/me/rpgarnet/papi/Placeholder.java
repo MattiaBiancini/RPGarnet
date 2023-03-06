@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.rpgarnet.RPGarnet;
 import me.rpgarnet.data.PlayerData;
-import me.rpgarnet.data.attribute.Statistic;
+import me.rpgarnet.data.attribute.CustomStatistic;
 import me.rpgarnet.data.attribute.Stats;
 import me.rpgarnet.utils.StringUtils;
 
@@ -56,7 +56,7 @@ public class Placeholder extends PlaceholderExpansion {
 		if(stats == null)
 			return string;
 		
-		Statistic statistic = data.getStats()[stats.getIntValue()];
+		CustomStatistic statistic = data.getStats()[stats.getIntValue()];
 		
 		if(params.equalsIgnoreCase(stats.toString() + "_level"))
 			return statistic.getLevel() + "";

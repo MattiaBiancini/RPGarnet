@@ -3,13 +3,18 @@ package me.rpgarnet;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.rpgarnet.commands.*;
 import me.rpgarnet.listener.*;
 import me.rpgarnet.papi.Placeholder;
+import me.rpgarnet.recipe.item.smithingplus.SmithingPlus;
+import me.rpgarnet.recipe.item.transposer.STCrafting;
 import me.rpgarnet.data.PlayerData;
+import me.rpgarnet.event.game.GameMechanics;
+import me.rpgarnet.event.time.BloodMoonEvent;
 
 public class RPGarnet extends JavaPlugin {
 
@@ -37,6 +42,8 @@ public class RPGarnet extends JavaPlugin {
 	public void onDisable() {
 
 		viewModel.saveAllData();
+		Bukkit.removeRecipe(new NamespacedKey(this, "smithing_plus"));
+		Bukkit.removeRecipe(new NamespacedKey(this, "spawner_transposer"));
 		getLogger().log(Level.INFO, "RPGarnet has been unloaded successfully!");
 
 	}
@@ -53,6 +60,7 @@ public class RPGarnet extends JavaPlugin {
 
 		loadCommands();
 		loadListeners();
+		loadCrafting();
 		viewModel = new PluginViewModel();
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			PlayerData data = viewModel.loadPlayerData(player);
@@ -72,11 +80,22 @@ public class RPGarnet extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new PlayerExperience(), this);
 		getServer().getPluginManager().registerEvents(new ChatEmoji(), this);
 		getServer().getPluginManager().registerEvents(new ChatTag(), this);
+		getServer().getPluginManager().registerEvents(new GameMechanics(), this);
+		getServer().getPluginManager().registerEvents(new SmithingPlus(), this);
+		getServer().getPluginManager().registerEvents(new STCrafting(), this);
+		getServer().getPluginManager().registerEvents(new BloodMoonEvent(), this);
 	}
 
 	private void loadCommands() {
 		this.getCommand("rpg").setExecutor(new InfoPlayer());
 		this.getCommand("rpg").setTabCompleter(new InfoPlayer());
+	}
+	
+	private void loadCrafting() {
+		
+		Bukkit.addRecipe(SmithingPlus.smithingPlusRecipe());
+		Bukkit.addRecipe(STCrafting.stcrafting());
+		
 	}
 
 	public PluginViewModel getViewModel() {

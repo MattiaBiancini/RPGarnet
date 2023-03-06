@@ -40,6 +40,8 @@ public class PlayerListener implements Listener {
 			player.kickPlayer(StringUtils.yamlString(viewModel.getMessage().getString("failed-registration")));
 			return;
 		}
+		
+		player.setResourcePack("https://www.dropbox.com/s/6l1gjp54yckkg68/RPGarnetTexturePack.zip?dl=1");
 
 		viewModel.addPlayer(data);
 		data.setPlayerAttributes();
