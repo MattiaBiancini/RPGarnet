@@ -14,6 +14,7 @@ public class SmithingEgg extends ItemStack {
 		ItemMeta smithingM = this.getItemMeta();
 
 		smithingM.setDisplayName("§4Enchanted Smithing Table");
+		smithingM.setCustomModelData(1);
 
 		this.setItemMeta(smithingM);
 
