@@ -277,3 +277,47 @@ To use you have to click your **gear** (armor, tool or weapon) that is **not** m
 | Mushroom Stew | 50 |
 | Golden Carrot | 80 |
 | Chorus Fruit | Random between 1 and 10 |
+
+## Blood Moon
+During the **Blood Moon Event** every mob that spawns has the following stats
+
+| Stats | Base Value Increment |
+| ------------ | ------------ |
+| Damage | 5x |
+| Movement Speed | 1.5x |
+| Armor | 20 |
+| Follow Range | 10x |
+| Knockback Resistance | 0.6 |
+| HP | 3x |
+
+In Addiction every mob acquires a new ability
+
+| Mob | Ability |
+| ------------ | ------------ |
+| Zombie | Probability to have armor 30%<br>Can steal player item in main hand |
+| Skeleton | Gives you Poison II for 3 sec<br>Has 0.1% of probability to deal you 50HP of damage (Headshot) |
+| Creeper | Spawns powered<br>Explosion Radius is 3x |
+| Spider | Gives you Nausea II for 5 sec |
+| Cave Spider | Gives you Wither II for 1.5 sec |
+| Phantom | Duplicates when hits you |
+| Slime | Duplicates when hits you |
+| Magma Cube | Duplicates when hits you |
+| Enderman | Teleports you at Y = 250 |
+| Guardian | Removes all your air |
+| Wither Skeleton | Increase HP by the damage until 1024 HP, then he acquires Resistance II for 2.5 sec |
+
+*NB: During the Blood Moon is impossible to sleep!*
+
+## Reverse Crafting
+Now Quartz Block, Amethyst Block and Clay Block has their reverse crafting.
+
+## Not-Renewable Items
+Now there is the crafting for this not-renewable items:
+| Item | Recipe |
+| ------------ | ------------ |
+| Calcite Block | ![](https://imgur.com/QXB1hPc.png) |
+| Tuff | ![](https://imgur.com/undefined.png) |
+| Dirt | ![](https://imgur.com/6PIwN6g.png) |
+
+## Woodcutter
+Now the stone cutting has same recipe for logs and planks
