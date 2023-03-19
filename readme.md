@@ -316,7 +316,7 @@ Now there is the crafting for this not-renewable items:
 | Item | Recipe |
 | ------------ | ------------ |
 | Calcite Block | ![](https://imgur.com/QXB1hPc.png) |
-| Tuff | ![](https://imgur.com/undefined.png) |
+| Tuff | ![](https://imgur.com/8tLyY5W.png) |
 | Dirt | ![](https://imgur.com/6PIwN6g.png) |
 
 ## Woodcutter
